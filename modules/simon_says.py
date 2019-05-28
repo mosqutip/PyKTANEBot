@@ -5,11 +5,44 @@ On the Subject of Simon Says
 2. Using the correct table below, press the button with the corresponding color.
 3. The original button will flash, followed by another. Repeat this sequence in order using the color mapping.
 4. The sequence will lengthen by one each time you correctly enter a sequence until the module is disarmed.
+
+       --------------
+       |          o |
+       |     /\ <---|-Blue
+  Red -|--> /\/\    |
+       |    \/\/ <--|-Yellow
+Green -|---> \/     |
+       |            |
+       --------------
+
+If the serial number contains a vowel:
+                                -------------------------------------
+                                |   Red  |  Blue  |  Green | Yellow |
+                                |  Flash |  Flash |  Flash |  Flash |
+--------------------------------|--------|--------|--------|--------|
+|                  | No Strikes |  Blue  |   Red  | Yellow |  Green |
+|                  | -----------|--------|--------|--------|--------|
+| Button to press: |  1 Strike  | Yellow |  Green |  Blue  |   Red  |
+|                  | -----------|--------|--------|--------|--------|
+|                  |  2 Strikes |  Green |   Red  | Yellow |  Blue  |
+---------------------------------------------------------------------
+
+If the serial number does not contain a vowel:
+                                -------------------------------------
+                                |   Red  |  Blue  |  Green | Yellow |
+                                |  Flash |  Flash |  Flash |  Flash |
+--------------------------------|--------|--------|--------|--------|
+|                  | No Strikes |  Blue  | Yellow |  Green |   Red  |
+|                  | -----------|--------|--------|--------|--------|
+| Button to press: |  1 Strike  |   Red  |  Blue  | Yellow |  Green |
+|                  | -----------|--------|--------|--------|--------|
+|                  |  2 Strikes | Yellow |  Green |  Blue  |   Red  |
+---------------------------------------------------------------------
 '''
 
 import modules.bomb
 
-class Simon:
+class SimonSays:
     def __init__(self, parameters: str) -> None:
         self.parameters = parameters
 

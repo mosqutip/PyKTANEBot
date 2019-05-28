@@ -1,10 +1,9 @@
 '''
 On the Subject of Keypads
-    • Only one column has all four of the symbols from the keypad.
-    • Press the four buttons in the order their symbols appear from top to bottom within that column.
-'''
 
-import modules.bomb
+• Only one column has all four of the symbols from the keypad.
+• Press the four buttons in the order their symbols appear from top to bottom within that column.
+'''
 
 class Keypad:
     symbol_table = [

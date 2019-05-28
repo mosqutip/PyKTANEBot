@@ -11,7 +11,8 @@ Follow these rules in the order they are listed. Perform the first action that a
     7. If none of the above apply, hold the button and refer to "Releasing a Held Button".
 
 Releasing a Held Button
-    • If you start holding the button down, a colored strip will light up on the right side of the module. Based on its color you must release the button at a specific point in time:
+If you start holding the button down, a colored strip will light up on the right side of the module.
+Based on its color you must release the button at a specific point in time:
     • Blue strip: release when the countdown timer has a 4 in any position.
     • White strip: release when the countdown timer has a 1 in any position.
     • Yellow strip: release when the countdown timer has a 5 in any position.
