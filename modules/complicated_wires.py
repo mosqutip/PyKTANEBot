@@ -14,7 +14,9 @@ class ComplicatedWires:
         self.parse_parameters()
 
     def parse_parameters(self) -> None:
-        wires = self.parameters.split('next')
+        wires = self.parameters.rstrip('next')
+        wires = wires.rstrip('done')
+        wires = wires.split('next')
         if len(wires) < 1 or len(wires) > 6:
             print('Wrong number of wires!')
             return
@@ -47,6 +49,10 @@ class ComplicatedWires:
         if not modules.bomb.is_ports_set:
             print('To solve a complicated wires module, I need to know which ports are on the bomb. \nYou can set the ports by saying: "set ports".')
         if ((not modules.bomb.is_num_batteries_set) or (not modules.bomb.is_serial_set) or (not modules.bomb.is_ports_set)):
+            return ''
+
+        if not self.parse_parameters:
+            print('Module initialization failed! Please re-initialize module.')
             return ''
 
         result = []

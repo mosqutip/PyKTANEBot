@@ -9,6 +9,7 @@ class SpeechHandler:
 
         with self.microphone:
             self.recognizer.adjust_for_ambient_noise(self.microphone)
+            self.recognizer.energy_threshold = 4000
 
         # TODO: investigate phrase timeout
         # TODO: investigate keyword tuning
@@ -31,7 +32,7 @@ class SpeechHandler:
             print(f'Sorry, I could not request results from the Google Speech Recognition Service: {request_error}')
 
     def recognize(self, recognizer: sr.Recognizer, microphone: sr.Microphone, command: str) -> None:
-        audio_data = recognizer.listen(microphone, timeout = None, phrase_time_limit = 5)
+        audio_data = recognizer.listen(microphone, timeout = None, phrase_time_limit = 15)
 
         try:
             input_data = {
