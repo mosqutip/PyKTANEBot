@@ -41,6 +41,9 @@ class Bomb:
     wire_modules = []
     button_modules = []
     keypad_modules = []
+    simon_says_modules = []
+    whos_on_first_modules = []
+    complicated_wires_modules = []
 
     def set_serial(self, audio_data: str) -> None:
         global is_last_digit_of_serial_odd
@@ -61,8 +64,10 @@ class Bomb:
         global num_batteries
         global is_num_batteries_set
 
-        if audio_data in self.word_to_int_mapping:
-            num_batteries = self.word_to_int_mapping[audio_data]
+        # Get last word of command, which should be the number of batteries.
+        batteries = audio_data.split()[-1]
+        if batteries in self.word_to_int_mapping:
+            num_batteries = self.word_to_int_mapping[batteries]
             is_num_batteries_set = True
 
     def set_indicators(self, audio_data: str) -> None:
@@ -70,7 +75,7 @@ class Bomb:
         global is_indicators_set
 
         is_indicators_set = True
-        for word in audio_data.split():
+        for word in audio_data.split()[2:]:
             indicators.append(word)
 
     def set_ports(self, audio_data: str) -> None:
@@ -78,10 +83,10 @@ class Bomb:
         global is_ports_set
 
         is_ports_set = True
-        for word in audio_data.split():
+        for word in audio_data.split()[2:]:
             ports.append(word)
 
-    def set_strikes(self) -> None:
+    def increment_strikes(self) -> None:
         global strikes
 
         strikes += 1

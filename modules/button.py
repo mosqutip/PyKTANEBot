@@ -23,31 +23,32 @@ import modules.bomb
 
 class Button:
     def __init__(self, parameters: str) -> None:
+        if not modules.bomb.is_num_batteries_set:
+            print('To solve a button module, I need to know how many batteries on are the bomb. \nYou can set the number of batteries by saying: "set batteries".')
+            return
+        if not modules.bomb.is_indicators_set:
+            print('To solve a button module, I need to know which 3-letter indicators are set (lit up) on the bomb. \nYou can set the indicators by saying: "set indicators".')
+            return
+
         self.parameters = parameters
         self.parse_parameters()
+        print(self.solve())
 
     def parse_parameters(self) -> None:
+        words = self.parameters.replace('read', 'red')
         words = self.parameters.split()
         if len(words) == 1:
-            self.parsed_parameters = words
-        else:
-            if len(words) != 2:
-                print('Invalid number of button parameters!')
-                return
-
+            self.parsed_parameters = words[0]
+        elif len(words) == 2:
             self.parsed_parameters = {
                 'color': words[0],
                 'text': words[1],
             }
+        else:
+            print('Invalid number of button parameters!')
+            return
 
     def solve(self) -> str:
-        if not modules.bomb.is_num_batteries_set:
-            print('To solve a button module, I need to know how many batteries on are the bomb. \nYou can set the number of batteries by saying: "set batteries".')
-        if not modules.bomb.is_indicators_set:
-            print('To solve a button module, I need to know which 3-letter indicators are set (lit up) on the bomb. \nYou can set the indicators by saying: "set indicators".')
-        if ((not modules.bomb.is_num_batteries_set) or (not modules.bomb.is_indicators_set)):
-            return ''
-
         if isinstance(self.parsed_parameters, dict):
             if ((self.parsed_parameters['color'] == 'blue') and (self.parsed_parameters['text'] == 'abort')):
                 return 'hold'

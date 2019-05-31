@@ -44,13 +44,14 @@ import modules.bomb
 
 class SimonSays:
     def __init__(self, parameters: str) -> None:
-        self.parameters = parameters
-
-    def solve(self) -> str:
         if not modules.bomb.is_serial_set:
             print('To solve a Simon Says module, I need to know if the serial number contains a vowel. \nYou can set the serial number by saying: "set serial".')
-            return ''
+            return
 
+        self.parameters = parameters
+        print(self.solve())
+
+    def solve(self) -> str:
         if modules.bomb.does_serial_contain_vowel:
             if modules.bomb.strikes == 0:
                 if self.parameters == 'red':

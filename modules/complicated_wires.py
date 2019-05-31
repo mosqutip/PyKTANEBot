@@ -10,8 +10,18 @@ import modules.bomb
 
 class ComplicatedWires:
     def __init__(self, parameters: str) -> None:
+        if not modules.bomb.is_num_batteries_set:
+            print('To solve a complicated wires module, I need to know how many batteries on are the bomb. \nYou can set the number of batteries by saying: "set batteries".')
+        if not modules.bomb.is_serial_set:
+            print('To solve a complicated wires module, I need to know if the last digit of the serial number is even. \nYou can set the serial by saying: "set serial".')
+        if not modules.bomb.is_ports_set:
+            print('To solve a complicated wires module, I need to know which ports are on the bomb. \nYou can set the ports by saying: "set ports".')
+        if ((not modules.bomb.is_num_batteries_set) or (not modules.bomb.is_serial_set) or (not modules.bomb.is_ports_set)):
+            return
+
         self.parameters = parameters
         self.parse_parameters()
+        print(self.solve())
 
     def parse_parameters(self) -> None:
         wires = self.parameters.rstrip('next')
@@ -42,15 +52,6 @@ class ComplicatedWires:
             self.parsed_parameters.append(wire_data)
 
     def solve(self) -> str:
-        if not modules.bomb.is_num_batteries_set:
-            print('To solve a complicated wires module, I need to know how many batteries on are the bomb. \nYou can set the number of batteries by saying: "set batteries".')
-        if not modules.bomb.is_serial_set:
-            print('To solve a complicated wires module, I need to know if the last digit of the serial number is even. \nYou can set the serial by saying: "set serial".')
-        if not modules.bomb.is_ports_set:
-            print('To solve a complicated wires module, I need to know which ports are on the bomb. \nYou can set the ports by saying: "set ports".')
-        if ((not modules.bomb.is_num_batteries_set) or (not modules.bomb.is_serial_set) or (not modules.bomb.is_ports_set)):
-            return ''
-
         if not self.parse_parameters:
             print('Module initialization failed! Please re-initialize module.')
             return ''

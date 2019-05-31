@@ -196,6 +196,7 @@ class WhosOnFirst:
     def __init__(self, parameters: str) -> None:
         self.parameters = parameters
         self.parse_parameters()
+        print(self.solve())
 
     def parse_parameters(self) -> None:
         if 'one' in self.parameters:
@@ -211,7 +212,7 @@ class WhosOnFirst:
             step = 2
             offset = self.parameters.find('2') + 2
         else:
-            print('No stage information given! Please give the stage with Who\'s on First commands. To use the Who\'s on First module, say "[step] one|two <word>".')
+            print('No stage information given! Please give the current stage with Who\'s on First commands. To use the Who\'s on First module, say "[step] one|two <word>".')
             return
 
         self.parsed_parameters = {

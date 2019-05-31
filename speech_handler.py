@@ -1,15 +1,22 @@
+from enum import Enum
 import queue
 import speech_recognition as sr
 
+class RecognitionMode(Enum):
+    Keyword = 0
+    Module = 1
+    Exit = 2
+
 class SpeechHandler:
-    def __init__(self, command_queue: queue.Queue) -> None:
-        self.command_queue = command_queue
+    def __init__(self, speech_queue: queue.Queue) -> None:
+        self.speech_queue = speech_queue
         self.recognizer = sr.Recognizer()
         self.microphone = sr.Microphone()
+        self.state = RecognitionMode.Keyword
 
         with self.microphone:
             self.recognizer.adjust_for_ambient_noise(self.microphone)
-            self.recognizer.energy_threshold = 4000
+            self.recognizer.energy_threshold = 2000
 
         # TODO: investigate phrase timeout
         # TODO: investigate keyword tuning
@@ -18,29 +25,39 @@ class SpeechHandler:
 
     def recognize_keyword(self, recognizer: sr.Recognizer, audio_data: sr.AudioData) -> None:
         try:
-            command = str.lower(recognizer.recognize_google(audio_data))
-            if command.startswith('exit') or command.startswith('quit') or command.startswith('stop'):
-                print('Got Exit')
+            recognized_speech = str.lower(recognizer.recognize_google(audio_data))
+
+            if (('exit' in recognized_speech) or ('quit' in recognized_speech) or ('stop' in recognized_speech)):
+                print('RECOGNITION: Exit command.')
+
                 self.stop_listening(False)
-                self.command_queue.put({ 'command' : 'exit' })
-            elif command.startswith('set') or command.startswith('module'):
-                print(f'Got command: {command}')
-                self.recognize(recognizer, self.microphone, command)
-        except sr.UnknownValueError:
-            print('Sorry, I could not understand that.')
-        except sr.RequestError as request_error:
-            print(f'Sorry, I could not request results from the Google Speech Recognition Service: {request_error}')
+                self.state = RecognitionMode.Exit
+                self.speech_queue.put('exit')
+            if (recognized_speech.startswith('print')):
+                print('RECOGNITION: Print command.')
 
-    def recognize(self, recognizer: sr.Recognizer, microphone: sr.Microphone, command: str) -> None:
-        audio_data = recognizer.listen(microphone, timeout = None, phrase_time_limit = 15)
+                self.speech_queue.put('print bomb')
+            elif (recognized_speech.startswith('initialize') or recognized_speech.startswith('setup')):
+                print(f'RECOGNITION: Initialization.')
 
-        try:
-            input_data = {
-                'command': command,
-                'parameters' : str.lower(recognizer.recognize_google(audio_data))
-            }
-            self.command_queue.put(input_data)
-            print(f'Submitted command: {command}, parameters: {input_data["parameters"]}')
+                self.state = RecognitionMode.Module
+                self.speech_queue.put('initialize')
+            elif recognized_speech.startswith('module'):
+                print('RECOGNITION: Module start.')
+
+                self.state = RecognitionMode.Module
+                self.speech_queue.put(recognized_speech)
+            elif self.state == RecognitionMode.Module:
+                if (('done' in recognized_speech) or ('complete' in recognized_speech)):
+                    print('RECOGNITION: Module complete.')
+
+                    self.state = RecognitionMode.Keyword
+                else:
+                    print('RECOGNITION: Module in progress.')
+
+                    self.speech_queue.put(recognized_speech)
+            else:
+                print('RECOGNITION: No matching command found. Ignoring...')
         except sr.UnknownValueError:
             print('Sorry, I could not understand that.')
         except sr.RequestError as request_error:

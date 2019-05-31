@@ -11,16 +11,19 @@ class Keypad:
         [ 'euro', 'oscar', 'backward', 'curly', 'light', 'hotel', 'question' ],
         [ 'copyright', 'butt', 'curly', 'squid', 'romeo', 'lambda', 'light' ],
         [ 'six', 'paragraph', 'bravo', 'kitty', 'squid', 'question', 'smiley' ],
-        [ 'psych', 'smiley', 'bravo', 'charlie', 'paragraph', 'three', 'dark' ],
-        [ 'six', 'euro', 'railroad', 'greek', 'psych', 'russia', 'omega' ],
+        [ 'trident', 'smiley', 'bravo', 'charlie', 'paragraph', 'three', 'dark' ],
+        [ 'six', 'euro', 'railroad', 'greek', 'trident', 'russia', 'omega' ],
     ]
 
     def __init__(self, parameters: str) -> None:
         self.parameters = parameters
         self.parse_parameters()
+        print(self.solve())
 
     def parse_parameters(self) -> None:
-        self.parsed_parameters = self.parameters.split()
+        self.parsed_parameters = self.parameters.replace('6', 'six')
+        self.parsed_parameters = self.parameters.replace('3', 'three')
+        self.parsed_parameters = self.parsed_parameters.split()
 
         if len(self.parsed_parameters) != 4:
             print('Wrong number of input symbols!')

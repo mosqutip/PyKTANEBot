@@ -34,14 +34,60 @@ On the Subject of Wires
 import modules.bomb
 
 class Wires:
-    def __init__(self, parameters: str) -> None:
-        self.parameters = parameters
-        self.parse_parameters()
-        self.solve()
+    def solve_next_step(self, recognized_speech: str) -> str:
+        if not self.try_parse_speech(recognized_speech):
+            return ''
+        if not modules.bomb.is_serial_set:
+            print('To solve a wires module, I need to know if the last digit of the serial number is even or odd.')
+            print('You can enter bomb setup mode by saying: "initialize".')
+            print('You can then set the serial number by saying: "set serial".')
+            return ''
 
-    def parse_parameters(self) -> None:
-        words = self.parameters.split()
-        self.parsed_parameters = {
+        if self.parsed_speech['wire_count'] == 3:
+            if self.parsed_speech['red_count'] == 0:
+                return 'second'
+            elif self.parsed_speech['last_wire'] == 'white':
+                return 'last'
+            elif self.parsed_speech['blue_count'] > 1:
+                return 'last blue'
+            else:
+                return 'last'
+        elif self.parsed_speech['wire_count'] == 4:
+            if ((self.parsed_speech['red_count'] > 1) and modules.bomb.is_last_digit_of_serial_odd):
+                return 'last red'
+            elif ((self.parsed_speech['last_wire'] == 'yellow') and (self.parsed_speech['red_count'] == 0)):
+                return 'first'
+            elif self.parsed_speech['blue_count'] == 1:
+                return 'first'
+            elif self.parsed_speech['yellow_count'] > 1:
+                return 'last'
+            else:
+                return 'second'
+        elif self.parsed_speech['wire_count'] == 5:
+            if ((self.parsed_speech['last_wire'] == 'black') and modules.bomb.is_last_digit_of_serial_odd):
+                return 'fourth'
+            elif ((self.parsed_speech['red_count'] == 1) and (self.parsed_speech['yellow_count'] > 1)):
+                return 'first'
+            elif self.parsed_speech['black_count'] == 0:
+                return 'second'
+            else:
+                return 'first'
+        elif self.parsed_speech['wire_count'] == 6:
+            if ((self.parsed_speech['yellow_count'] == 0) and modules.bomb.is_last_digit_of_serial_odd):
+                return 'third'
+            elif ((self.parsed_speech['yellow_count'] == 1) and (self.parsed_speech['white_count'] > 1)):
+                return 'fourth'
+            elif self.parsed_speech['red_count'] == 0:
+                return 'last'
+            else:
+                return 'fourth'
+        else:
+            print('Wires module: invalid wire parameters!')
+            return ''
+
+    def try_parse_speech(self, recognized_speech: str) -> bool:
+        words = recognized_speech.split()
+        self.parsed_speech = {
             'wire_count': len(words),
             'last_wire': words[-1],
             'red_count': 0,
@@ -51,68 +97,23 @@ class Wires:
             'black_count': 0
         }
 
-        if ((self.parsed_parameters['wire_count'] < 3) or (self.parsed_parameters['wire_count'] > 6)):
-            print('Invalid number of wires!')
-            return
+        if ((self.parsed_speech['wire_count'] < 3) or (self.parsed_speech['wire_count'] > 6)):
+            print('Wires module: invalid number of wires!')
+            return False
 
         for word in words:
             if word == 'red':
-                self.parsed_parameters['red_count'] += 1
+                self.parsed_speech['red_count'] += 1
             elif word == 'yellow':
-                self.parsed_parameters['yellow_count'] += 1
+                self.parsed_speech['yellow_count'] += 1
             elif word == 'blue':
-                self.parsed_parameters['blue_count'] += 1
+                self.parsed_speech['blue_count'] += 1
             elif word == 'white':
-                self.parsed_parameters['white_count'] += 1
+                self.parsed_speech['white_count'] += 1
             elif word == 'black':
-                self.parsed_parameters['black_count'] += 1
+                self.parsed_speech['black_count'] += 1
             else:
-                print('Invalid wire color!')
-                return
+                print('Wires module: invalid wire color!')
+                return False
 
-    def solve(self) -> str:
-        if not modules.bomb.is_serial_set:
-            print('To solve a wires module, I need to know if the last digit of the serial number is even or odd. \nYou can set the serial number by saying: "set serial".')
-            return ''
-
-        if self.parsed_parameters['wire_count'] == 3:
-            if self.parsed_parameters['red_count'] == 0:
-                return 'second'
-            elif self.parsed_parameters['last_wire'] == 'white':
-                return 'last'
-            elif self.parsed_parameters['blue_count'] > 1:
-                return 'last blue'
-            else:
-                return 'last'
-        elif self.parsed_parameters['wire_count'] == 4:
-            if ((self.parsed_parameters['red_count'] > 1) and modules.bomb.is_last_digit_of_serial_odd):
-                return 'last red'
-            elif ((self.parsed_parameters['last_wire'] == 'yellow') and (self.parsed_parameters['red_count'] == 0)):
-                return 'first'
-            elif self.parsed_parameters['blue_count'] == 1:
-                return 'first'
-            elif self.parsed_parameters['yellow_count'] > 1:
-                return 'last'
-            else:
-                return 'second'
-        elif self.parsed_parameters['wire_count'] == 5:
-            if ((self.parsed_parameters['last_wire'] == 'black') and modules.bomb.is_last_digit_of_serial_odd):
-                return 'fourth'
-            elif ((self.parsed_parameters['red_count'] == 1) and (self.parsed_parameters['yellow_count'] > 1)):
-                return 'first'
-            elif self.parsed_parameters['black_count'] == 0:
-                return 'second'
-            else:
-                return 'first'
-        elif self.parsed_parameters['wire_count'] == 6:
-            if ((self.parsed_parameters['yellow_count'] == 0) and modules.bomb.is_last_digit_of_serial_odd):
-                return 'third'
-            elif ((self.parsed_parameters['yellow_count'] == 1) and (self.parsed_parameters['white_count'] > 1)):
-                return 'fourth'
-            elif self.parsed_parameters['red_count'] == 0:
-                return 'last'
-            else:
-                return 'fourth'
-        else:
-            print('Invalid wire parameters!')
-            return ''
+        return True
