@@ -10,9 +10,10 @@ import modules.bomb
 
 class ComplicatedWires:
     def try_parse_speech(self, recognized_speech: str) -> bool:
-        wires = recognized_speech.rstrip('next')
-        wires = wires.rstrip('done')
-        wires = wires.split('next')
+        if recognized_speech.endswith('next'):
+            recognized_speech = recognized_speech[0:-5]
+
+        wires = recognized_speech.split(' next ')
         if len(wires) < 1 or len(wires) > 6:
             print('Complicated wires module: invalid number of wires!')
             return False
@@ -28,12 +29,15 @@ class ComplicatedWires:
 
             if 'light' in wire:
                 wire_data['led'] = True
-            if 'blue' in wire:
+            elif 'blue' in wire:
                 wire_data['blue'] = True
-            if 'red' in wire:
+            elif 'red' in wire:
                 wire_data['red'] = True
-            if 'star' in wire:
+            elif 'star' in wire:
                 wire_data['star'] = True
+            else:
+                print('Complicated wires module: invalid wire parameter!')
+                return False
 
             self.parsed_speech.append(wire_data)
 

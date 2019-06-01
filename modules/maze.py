@@ -200,28 +200,55 @@ import utilities
 
 class Maze:
     def try_parse_speech(self, recognized_speech: str) -> bool:
+        recognized_speech = recognized_speech.replace('-', '')
         if recognized_speech.endswith('next'):
             recognized_speech = recognized_speech[0:-5]
         coordinates = recognized_speech.split(' next ')
+
         if len(coordinates) != 4:
             print('Maze module: invalid number of coordinates!')
             return False
 
-        start_x = ((utilities.string_to_number(coordinates[0]) * 2) - 2)
-        start_y = ((utilities.string_to_number(coordinates[1]) * 2) - 2)
-        end_x = ((utilities.string_to_number(coordinates[2]) * 2) - 2)
-        end_y = ((utilities.string_to_number(coordinates[3]) * 2) - 2)
+        self.parsed_speech = []
+        for coordinate in coordinates:
+            stripped_coordinate = coordinate.strip()
+            coordinate_data = {
+                'circle': False,
+                'triangle': False,
+                'square': False,
+                'numbers': []
+            }
 
-        self.start_coordinate = (start_x, start_y)
-        self.end_coordinate = (end_x, end_y)
-        self.maze = ''
+            if 'circle' in stripped_coordinate:
+                coordinate_data['circle'] = True
+                stripped_coordinate = stripped_coordinate.replace('circle', '')
+            elif 'triangle' in stripped_coordinate:
+                coordinate_data['triangle'] = True
+                stripped_coordinate = stripped_coordinate.replace('triangle', '')
+            elif 'square' in stripped_coordinate:
+                coordinate_data['square'] = True
+                stripped_coordinate = stripped_coordinate.replace('square', '')
+            else:
+                print('Maze module: invalid coordinate parameter!')
+                return False
 
-        if ((self.start_coordinate in coordinate_to_maze_number) and (self.end_coordinate in coordinate_to_maze_number)):
-            self.maze = coordinate_to_maze_number[self.start_coordinate]
-            self.visited = [[False for i in range(11)] for j in range(11)]
-        else:
-            print('Maze module: invalid coordinates!')
-            return False
+            # Strip again to remove any errant spaces
+            numbers = stripped_coordinate.strip()
+
+            # Assume the coordinates were parsed as one number, e.g. (5, 3) -> '53'
+            if len(numbers.split()) == 1:
+                digits = [digit for digit in numbers]
+            elif len(numbers.split()) == 2:
+                digits = numbers.split()
+            else:
+                print('Maze module: invalid number of coordinates!')
+                return False
+
+            for digit in digits:
+                translated_value = ((utilities.string_to_number(digit) * 2) - 2)
+                coordinate_data['numbers'].append(translated_value)
+
+            self.parsed_speech.append(coordinate_data)
 
         return True
 
@@ -229,6 +256,25 @@ class Maze:
         if not self.try_parse_speech(recognized_speech):
             print('Maze module: could not parse speech!')
             return ''
+
+        circle_coordinates = []
+        self.start_coordinate = None
+        self.end_coordinate = None
+        for coordinate in self.parsed_speech:
+            if coordinate['circle']:
+                circle_coordinates.append((coordinate['numbers'][0], coordinate['numbers'][1]))
+            elif coordinate['square']:
+                self.start_coordinate = (coordinate['numbers'][0], coordinate['numbers'][1])
+            elif coordinate['triangle']:
+                self.end_coordinate = (coordinate['numbers'][0], coordinate['numbers'][1])
+
+        self.maze = ''
+        if ((circle_coordinates[0] in coordinate_to_maze_number) and (circle_coordinates[1] in coordinate_to_maze_number)):
+            self.maze = coordinate_to_maze_number[circle_coordinates[0]]
+            self.visited = [[False for i in range(11)] for j in range(11)]
+        else:
+            print('Maze module: invalid coordinates!')
+            return False
 
         steps = []
         self.solve_maze_recursive(self.start_coordinate[0], self.start_coordinate[1], steps)
