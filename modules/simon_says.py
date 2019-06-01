@@ -126,4 +126,3 @@ class SimonSays:
             self.stage += 1
             self.press_history.append(solution)
             return ', '.join(self.press_history)
- 

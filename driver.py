@@ -6,6 +6,7 @@ from modules.complicated_wires import ComplicatedWires
 from modules.keypad import Keypad
 from modules.knob import Knob
 from modules.memory import Memory
+from modules.morse_code import MorseCode
 from modules.simon_says import SimonSays
 from modules.whos_on_first import WhosOnFirst
 from modules.wires import Wires
@@ -81,12 +82,15 @@ class Game:
         elif recognized_speech == 'module who\'s on first':
             self.bomb_mode = BombMode.StartModule
             self.current_module_type = Module.WhosOnFirst
-        elif recognized_speech == 'module complicated wires':
-            self.bomb_mode = BombMode.StartModule
-            self.current_module_type = Module.ComplicatedWires
         elif recognized_speech == 'module memory':
             self.bomb_mode = BombMode.StartModule
             self.current_module_type = Module.Memory
+        elif recognized_speech == 'module morse code':
+            self.bomb_mode = BombMode.StartModule
+            self.current_module_type = Module.MorseCode
+        elif recognized_speech == 'module complicated wires':
+            self.bomb_mode = BombMode.StartModule
+            self.current_module_type = Module.ComplicatedWires
 
         if self.bomb_mode != BombMode.Free:
             return self.handle_mode(recognized_speech)
@@ -135,12 +139,15 @@ class Game:
         elif self.current_module_type == Module.WhosOnFirst:
             stored_modules = self.bomb.whos_on_first_modules
             new_module = WhosOnFirst
-        elif self.current_module_type == Module.ComplicatedWires:
-            stored_modules = self.bomb.complicated_wires_modules
-            new_module = ComplicatedWires
         elif self.current_module_type == Module.Memory:
             stored_modules = self.bomb.memory_modules
             new_module = Memory
+        elif self.current_module_type == Module.MorseCode:
+            stored_modules = self.bomb.morse_code_modules
+            new_module = MorseCode
+        elif self.current_module_type == Module.ComplicatedWires:
+            stored_modules = self.bomb.complicated_wires_modules
+            new_module = ComplicatedWires
 
         if recognized_speech.startswith('index'):
             module_index = self._get_module_index(recognized_speech)
@@ -176,8 +183,9 @@ class Module(Enum):
     Keypad = 2
     SimonSays = 3
     WhosOnFirst = 4
-    ComplicatedWires = 5
-    Memory = 6
+    Memory = 5
+    MorseCode = 6
+    ComplicatedWires = 7
 
 def main():
     game = Game()

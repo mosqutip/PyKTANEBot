@@ -18,8 +18,9 @@ class Bomb:
     keypad_modules = []
     simon_says_modules = []
     whos_on_first_modules = []
-    complicated_wires_modules = []
     memory_modules = []
+    morse_code_modules = []
+    complicated_wires_modules = []
 
     def set_serial(self, audio_data: str) -> None:
         global is_last_digit_of_serial_odd

@@ -52,7 +52,7 @@ class SpeechHandler:
                 self.state = RecognitionMode.Module
                 self.speech_queue.put(recognized_speech)
             elif self.state == RecognitionMode.Module:
-                if (('done' in recognized_speech) or ('complete' in recognized_speech)):
+                if (('finish' in recognized_speech) or ('complete' in recognized_speech)):
                     print('RECOGNITION: Module complete.')
 
                     self.state = RecognitionMode.Keyword
