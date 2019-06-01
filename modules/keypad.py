@@ -15,34 +15,31 @@ class Keypad:
         [ 'six', 'euro', 'railroad', 'greek', 'trident', 'russia', 'omega' ],
     ]
 
-    def __init__(self, parameters: str) -> None:
-        self.parameters = parameters
-        self.parse_parameters()
-        print(self.solve())
+    def try_parse_speech(self, recognized_speech: str) -> bool:
+        self.parsed_speech = recognized_speech.replace('6', 'six')
+        self.parsed_speech = self.parsed_speech.replace('3', 'three')
+        self.parsed_speech = self.parsed_speech.split()
 
-    def parse_parameters(self) -> None:
-        self.parsed_parameters = self.parameters.replace('6', 'six')
-        self.parsed_parameters = self.parameters.replace('3', 'three')
-        self.parsed_parameters = self.parsed_parameters.split()
+        if len(self.parsed_speech) != 4:
+            print('Keypad module: wrong number of input symbols!')
+            return False
 
-        if len(self.parsed_parameters) != 4:
-            print('Wrong number of input symbols!')
-            return
+        return True
 
-    def solve(self) -> str:
+    def solve_next_step(self, recognized_speech: str) -> str:
         for i in range(len(self.symbol_table)):
             output_symbols = [ '' ] * 4
             count = 0
 
             for j in range(len(self.symbol_table[0])):
                 current_symbol = self.symbol_table[i][j]
-                if current_symbol in self.parsed_parameters:
+                if current_symbol in self.parsed_speech:
                     output_symbols[count] = current_symbol
                     count += 1
 
                 if count == 4:
-                    return output_symbols
+                    return ', '.join(output_symbols)
 
         if count != 4:
-            print('Unrecognized symbol in input!')
+            print('Keypad module: unrecognized symbol in input!')
             return ''

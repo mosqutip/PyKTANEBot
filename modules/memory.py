@@ -62,7 +62,7 @@ class Memory:
             elif 'pressing' in words:
                 self.press_history[self.stage]['label'] = utilities.string_to_number(words[2])
             else:
-                print('Invalid memory command!')
+                print('Memory module: invalid command!')
                 return False
 
             self.parsed_speech = ''
@@ -77,7 +77,7 @@ class Memory:
 
     def solve_next_step(self, recognized_speech: str) -> str:
         if not self.try_parse_speech(recognized_speech):
-            print('Could not parse speech!')
+            print('Memory module: could not parse speech!')
             return ''
 
         if self.parsed_speech != '':
@@ -91,6 +91,8 @@ class Memory:
                 return self.solve_stage_four()
             elif self.stage == 5:
                 return self.solve_stage_five()
+        else:
+            return ''
 
     def solve_stage_one(self) -> str:
         if ((self.parsed_speech == 1) or (self.parsed_speech == 2)):
@@ -103,7 +105,7 @@ class Memory:
             self.press_history[1]['position'] = 4
             return 'Press the button in the fourth position'
         else:
-            return 'Invalid display value!'
+            return 'Memory module: invalid display value!'
 
     def solve_stage_two(self) -> str:
         if self.parsed_speech == 1:
@@ -116,7 +118,7 @@ class Memory:
             self.press_history[2]['position'] = 1
             return 'Press the button in the first position'
         else:
-            return 'Invalid display value!'
+            return 'Memory module: invalid display value!'
 
     def solve_stage_three(self) -> str:
         if self.parsed_speech == 1:
@@ -132,7 +134,7 @@ class Memory:
             self.press_history[3]['label'] = 4
             return 'Press the button labelled 4.'
         else:
-            return 'Invalid display value!'
+            return 'Memory module: invalid display value!'
 
     def solve_stage_four(self) -> str:
         if self.parsed_speech == 1:
@@ -145,7 +147,7 @@ class Memory:
             self.press_history[4]['position'] = self.press_history[2]['position']
             return f'Press the button in the same position (position {self.press_history[2]["position"]}) as the button you pressed in stage two.'
         else:
-            return 'Invalid display value!'
+            return 'Memory module: invalid display value!'
 
     def solve_stage_five(self) -> str:
         if self.parsed_speech == 1:
@@ -157,4 +159,4 @@ class Memory:
         elif self.parsed_speech == 4:
             return f'Press the button with the same label (label {self.press_history[3]["label"]}) as the button you pressed in stage three.'
         else:
-            return 'Invalid display value!'
+            return 'Memory module: invalid display value!'

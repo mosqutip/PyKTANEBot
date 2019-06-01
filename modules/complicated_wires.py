@@ -9,29 +9,15 @@ On the Subject of Complicated Wires
 import modules.bomb
 
 class ComplicatedWires:
-    def __init__(self, parameters: str) -> None:
-        if not modules.bomb.is_num_batteries_set:
-            print('To solve a complicated wires module, I need to know how many batteries on are the bomb. \nYou can set the number of batteries by saying: "set batteries".')
-        if not modules.bomb.is_serial_set:
-            print('To solve a complicated wires module, I need to know if the last digit of the serial number is even. \nYou can set the serial by saying: "set serial".')
-        if not modules.bomb.is_ports_set:
-            print('To solve a complicated wires module, I need to know which ports are on the bomb. \nYou can set the ports by saying: "set ports".')
-        if ((not modules.bomb.is_num_batteries_set) or (not modules.bomb.is_serial_set) or (not modules.bomb.is_ports_set)):
-            return
-
-        self.parameters = parameters
-        self.parse_parameters()
-        print(self.solve())
-
-    def parse_parameters(self) -> None:
-        wires = self.parameters.rstrip('next')
+    def try_parse_speech(self, recognized_speech: str) -> bool:
+        wires = recognized_speech.rstrip('next')
         wires = wires.rstrip('done')
         wires = wires.split('next')
         if len(wires) < 1 or len(wires) > 6:
-            print('Wrong number of wires!')
-            return
+            print('Complicated wires module: invalid number of wires!')
+            return False
 
-        self.parsed_parameters = []
+        self.parsed_speech = []
         for wire in wires:
             wire_data = {
                 'led': False,
@@ -49,15 +35,32 @@ class ComplicatedWires:
             if 'star' in wire:
                 wire_data['star'] = True
 
-            self.parsed_parameters.append(wire_data)
+            self.parsed_speech.append(wire_data)
 
-    def solve(self) -> str:
-        if not self.parse_parameters:
-            print('Module initialization failed! Please re-initialize module.')
+        return True
+
+    def solve_next_step(self, recognized_speech: str) -> str:
+        if not self.try_parse_speech(recognized_speech):
+            print('Complicated wires module: could not parse speech!')
+            return ''
+        if not modules.bomb.is_num_batteries_set:
+            print('To solve a complicated wires module, I need to know how many batteries on are the bomb.')
+            print('You can enter bomb setup mode by saying: "initialize".')
+            print('You can then set the number of batteries by saying: "set batteries".')
+            return ''
+        if not modules.bomb.is_serial_set:
+            print('To solve a complicated wires module, I need to know if the last digit of the serial number is even.')
+            print('You can enter bomb setup mode by saying: "initialize".')
+            print('You can then set the serial number by saying: "set serial".')
+            return ''
+        if not modules.bomb.is_ports_set:
+            print('To solve a complicated wires module, I need to know which ports are on the bomb.')
+            print('You can enter bomb setup mode by saying: "initialize".')
+            print('You can then set the ports by saying: "set ports".')
             return ''
 
         result = []
-        for wire in self.parsed_parameters:
+        for wire in self.parsed_speech:
             if wire['led']:
                 if wire['blue']:
                     if wire['red']:

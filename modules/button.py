@@ -22,54 +22,65 @@ Based on its color you must release the button at a specific point in time:
 import modules.bomb
 
 class Button:
-    def __init__(self, parameters: str) -> None:
-        if not modules.bomb.is_num_batteries_set:
-            print('To solve a button module, I need to know how many batteries on are the bomb. \nYou can set the number of batteries by saying: "set batteries".')
-            return
-        if not modules.bomb.is_indicators_set:
-            print('To solve a button module, I need to know which 3-letter indicators are set (lit up) on the bomb. \nYou can set the indicators by saying: "set indicators".')
-            return
+    def __init__(self):
+        self.stage = 1
 
-        self.parameters = parameters
-        self.parse_parameters()
-        print(self.solve())
+    def try_parse_speech(self, recognized_speech: str) -> bool:
+        self.parsed_speech = recognized_speech.replace('read', 'red')
+        # TODO: make sure single word is color?
 
-    def parse_parameters(self) -> None:
-        words = self.parameters.replace('read', 'red')
-        words = self.parameters.split()
-        if len(words) == 1:
-            self.parsed_parameters = words[0]
-        elif len(words) == 2:
-            self.parsed_parameters = {
+        if self.stage == 1:
+            words = self.parsed_speech.split()
+            if len(words) != 2:
+                print('Button module: invalid number of button parameters!')
+                return False
+
+            self.parsed_speech = {
                 'color': words[0],
                 'text': words[1],
             }
-        else:
-            print('Invalid number of button parameters!')
-            return
 
-    def solve(self) -> str:
-        if isinstance(self.parsed_parameters, dict):
-            if ((self.parsed_parameters['color'] == 'blue') and (self.parsed_parameters['text'] == 'abort')):
-                return 'hold'
-            elif ((modules.bomb.num_batteries > 1) and (self.parsed_parameters['text'] == 'detonate')):
-                return 'press and immediately release'
-            elif ((self.parsed_parameters['color'] == 'white') and ('car' in modules.bomb.indicators)):
-                return 'hold'
+        return True
+
+    def solve_next_step(self, recognized_speech: str) -> str:
+        if not self.try_parse_speech(recognized_speech):
+            print('Button module: could not parse speech!')
+            return ''
+        if not modules.bomb.is_num_batteries_set:
+            print('To solve a button module, I need to know how many batteries on are the bomb.')
+            print('You can enter bomb setup mode by saying: "initialize".')
+            print('You can then set the number of batteries by saying: "set batteries".')
+            return ''
+        if not modules.bomb.is_indicators_set:
+            print('To solve a button module, I need to know which indicators are lit on are the bomb.')
+            print('You can enter bomb setup mode by saying: "initialize".')
+            print('You can then set the indicators by saying: "set indicators".')
+            return ''
+
+        if self.stage == 1:
+            solution = ''
+            if ((self.parsed_speech['color'] == 'blue') and (self.parsed_speech['text'] == 'abort')):
+                solution =  'hold'
+            elif ((modules.bomb.num_batteries > 1) and (self.parsed_speech['text'] == 'detonate')):
+                solution =  'press and immediately release'
+            elif ((self.parsed_speech['color'] == 'white') and ('car' in modules.bomb.indicators)):
+                solution =  'hold'
             elif ((modules.bomb.num_batteries > 2) and ('freak' in modules.bomb.indicators)):
-                return 'press and immediately release'
-            elif self.parsed_parameters['color'] == 'yellow':
-                return 'hold'
-            elif ((self.parsed_parameters['color'] == 'red') and (self.parsed_parameters['text'] == 'hold')):
-                return 'press and immediately release'
+                solution =  'press and immediately release'
+            elif self.parsed_speech['color'] == 'yellow':
+                solution =  'hold'
+            elif ((self.parsed_speech['color'] == 'red') and (self.parsed_speech['text'] == 'hold')):
+                solution =  'press and immediately release'
             else:
-                return 'hold'
-        else:
-            if self.parsed_parameters == 'blue':
+                solution =  'hold'
+            self.stage += 1
+            return solution
+        elif self.stage == 2:
+            if self.parsed_speech == 'blue':
                 return 'release when timer has a 4 in any position'
-            elif self.parsed_parameters == 'white':
+            elif self.parsed_speech == 'white':
                 return 'release when timer has a 1 in any position'
-            elif self.parsed_parameters == 'yellow':
+            elif self.parsed_speech == 'yellow':
                 return 'release when timer has a 5 in any position'
             else:
                 return 'release when timer has a 1 in any position'

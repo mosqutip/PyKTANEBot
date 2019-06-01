@@ -43,86 +43,84 @@ If the serial number does not contain a vowel:
 import modules.bomb
 
 class SimonSays:
-    def __init__(self, parameters: str) -> None:
+    def __init__(self) -> None:
+        self.stage = 1
+        self.press_history = []
+
+    def try_parse_speech(self, recognized_speech: str) -> bool:
+        self.parsed_speech = recognized_speech
+        return True
+
+    def solve_next_step(self, recognized_speech: str) -> str:
         if not modules.bomb.is_serial_set:
-            print('To solve a Simon Says module, I need to know if the serial number contains a vowel. \nYou can set the serial number by saying: "set serial".')
-            return
+            print('To solve a Simon Says module, I need to know if the serial number contains a vowel.')
+            print('You can enter bomb setup mode by saying: "initialize".')
+            print('You can then set the serial number by saying: "set serial".')
+            return ''
 
-        self.parameters = parameters
-        print(self.solve())
-
-    def solve(self) -> str:
+        solution = ''
         if modules.bomb.does_serial_contain_vowel:
             if modules.bomb.strikes == 0:
-                if self.parameters == 'red':
-                    return 'blue'
-                elif self.parameters == 'blue':
-                    return 'red'
-                elif self.parameters == 'green':
-                    return 'yellow'
-                elif self.parameters == 'yellow':
-                    return 'green'
-                else:
-                    print('Invalid color parameter!')
-                    return ''
+                if self.parsed_speech == 'red':
+                    solution = 'blue'
+                elif self.parsed_speech == 'blue':
+                    solution = 'red'
+                elif self.parsed_speech == 'green':
+                    solution = 'yellow'
+                elif self.parsed_speech == 'yellow':
+                    solution = 'green'
             if modules.bomb.strikes == 1:
-                if self.parameters == 'red':
-                    return 'yellow'
-                elif self.parameters == 'blue':
-                    return 'green'
-                elif self.parameters == 'green':
-                    return 'blue'
-                elif self.parameters == 'yellow':
-                    return 'red'
-                else:
-                    print('Invalid color parameter!')
-                    return ''
+                if self.parsed_speech == 'red':
+                    solution = 'yellow'
+                elif self.parsed_speech == 'blue':
+                    solution = 'green'
+                elif self.parsed_speech == 'green':
+                    solution = 'blue'
+                elif self.parsed_speech == 'yellow':
+                    solution = 'red'
             if modules.bomb.strikes == 2:
-                if self.parameters == 'red':
-                    return 'green'
-                elif self.parameters == 'blue':
-                    return 'red'
-                elif self.parameters == 'green':
-                    return 'yellow'
-                elif self.parameters == 'yellow':
-                    return 'blue'
-                else:
-                    print('Invalid color parameter!')
-                    return ''
+                if self.parsed_speech == 'red':
+                    solution = 'green'
+                elif self.parsed_speech == 'blue':
+                    solution = 'red'
+                elif self.parsed_speech == 'green':
+                    solution = 'yellow'
+                elif self.parsed_speech == 'yellow':
+                    solution = 'blue'
         else:
             if modules.bomb.strikes == 0:
-                if self.parameters == 'red':
-                    return 'blue'
-                elif self.parameters == 'blue':
-                    return 'yellow'
-                elif self.parameters == 'green':
-                    return 'green'
-                elif self.parameters == 'yellow':
-                    return 'red'
-                else:
-                    print('Invalid color parameter!')
-                    return ''
+                if self.parsed_speech == 'red':
+                    solution = 'blue'
+                elif self.parsed_speech == 'blue':
+                    solution = 'yellow'
+                elif self.parsed_speech == 'green':
+                    solution = 'green'
+                elif self.parsed_speech == 'yellow':
+                    solution = 'red'
             if modules.bomb.strikes == 1:
-                if self.parameters == 'red':
-                    return 'red'
-                elif self.parameters == 'blue':
-                    return 'blue'
-                elif self.parameters == 'green':
-                    return 'yellow'
-                elif self.parameters == 'yellow':
-                    return 'green'
-                else:
-                    print('Invalid color parameter!')
-                    return ''
+                if self.parsed_speech == 'red':
+                    solution = 'red'
+                elif self.parsed_speech == 'blue':
+                    solution = 'blue'
+                elif self.parsed_speech == 'green':
+                    solution = 'yellow'
+                elif self.parsed_speech == 'yellow':
+                    solution = 'green'
             if modules.bomb.strikes == 2:
-                if self.parameters == 'red':
-                    return 'yellow'
-                elif self.parameters == 'blue':
-                    return 'green'
-                elif self.parameters == 'green':
-                    return 'blue'
-                elif self.parameters == 'yellow':
-                    return 'red'
-                else:
-                    print('Invalid color parameter!')
-                    return ''
+                if self.parsed_speech == 'red':
+                    solution = 'yellow'
+                elif self.parsed_speech == 'blue':
+                    solution = 'green'
+                elif self.parsed_speech == 'green':
+                    solution = 'blue'
+                elif self.parsed_speech == 'yellow':
+                    solution = 'red'
+
+        if solution == '':
+            print('Simon Says module: invalid color parameter!')
+            return ''
+        else:
+            self.stage += 1
+            self.press_history.append(solution)
+            return ', '.join(self.press_history)
+ 

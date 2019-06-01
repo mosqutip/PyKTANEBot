@@ -34,9 +34,43 @@ On the Subject of Wires
 import modules.bomb
 
 class Wires:
+    def try_parse_speech(self, recognized_speech: str) -> bool:
+        words = recognized_speech.split()
+        self.parsed_speech = {
+            'wire_count': len(words),
+            'last_wire': words[-1],
+            'red_count': 0,
+            'yellow_count': 0,
+            'blue_count': 0,
+            'white_count': 0,
+            'black_count': 0
+        }
+
+        if ((self.parsed_speech['wire_count'] < 3) or (self.parsed_speech['wire_count'] > 6)):
+            print('Wires module: invalid number of wires!')
+            return False
+
+        for word in words:
+            if word == 'red':
+                self.parsed_speech['red_count'] += 1
+            elif word == 'yellow':
+                self.parsed_speech['yellow_count'] += 1
+            elif word == 'blue':
+                self.parsed_speech['blue_count'] += 1
+            elif word == 'white':
+                self.parsed_speech['white_count'] += 1
+            elif word == 'black':
+                self.parsed_speech['black_count'] += 1
+            else:
+                print('Wires module: invalid wire color!')
+                return False
+
+        return True
+
     def solve_next_step(self, recognized_speech: str) -> str:
         if not self.try_parse_speech(recognized_speech):
-            print('Could not parse speech!')
+            print('Wires module: could not parse speech!')
+            return ''
         if not modules.bomb.is_serial_set:
             print('To solve a wires module, I need to know if the last digit of the serial number is even or odd.')
             print('You can enter bomb setup mode by saying: "initialize".')
@@ -84,36 +118,3 @@ class Wires:
         else:
             print('Wires module: invalid wire parameters!')
             return ''
-
-    def try_parse_speech(self, recognized_speech: str) -> bool:
-        words = recognized_speech.split()
-        self.parsed_speech = {
-            'wire_count': len(words),
-            'last_wire': words[-1],
-            'red_count': 0,
-            'yellow_count': 0,
-            'blue_count': 0,
-            'white_count': 0,
-            'black_count': 0
-        }
-
-        if ((self.parsed_speech['wire_count'] < 3) or (self.parsed_speech['wire_count'] > 6)):
-            print('Wires module: invalid number of wires!')
-            return False
-
-        for word in words:
-            if word == 'red':
-                self.parsed_speech['red_count'] += 1
-            elif word == 'yellow':
-                self.parsed_speech['yellow_count'] += 1
-            elif word == 'blue':
-                self.parsed_speech['blue_count'] += 1
-            elif word == 'white':
-                self.parsed_speech['white_count'] += 1
-            elif word == 'black':
-                self.parsed_speech['black_count'] += 1
-            else:
-                print('Wires module: invalid wire color!')
-                return False
-
-        return True

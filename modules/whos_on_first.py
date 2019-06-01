@@ -193,38 +193,18 @@ class WhosOnFirst:
         'like':                ['you\'re', 'next', 'u', 'ur', 'hold', 'done', 'uh uh', 'what?', 'uh huh', 'you', 'like', 'sure', 'you are', 'your'],
     }
 
-    def __init__(self, parameters: str) -> None:
-        self.parameters = parameters
-        self.parse_parameters()
-        print(self.solve())
+    def __init__(self):
+        self.stage = 1
 
-    def parse_parameters(self) -> None:
-        if 'one' in self.parameters:
-            step = 1
-            offset = self.parameters.find('one') + 4
-        elif '1' in self.parameters:
-            step = 1
-            offset = self.parameters.find('1') + 2
-        elif 'two' in self.parameters:
-            step = 2
-            offset = self.parameters.find('two') + 4
-        elif '2' in self.parameters:
-            step = 2
-            offset = self.parameters.find('2') + 2
+    def try_parse_speech(self, recognized_speech: str) -> bool:
+        self.parsed_speech = recognized_speech
+        return True
+
+    def solve_next_step(self, recognized_speech: str) -> str:
+        if ((self.stage == 1) and (self.parsed_speech in self.step_one_word_mapping)):
+                return self.step_one_word_mapping[self.parsed_speech['words']]
+        elif ((self.stage == 2) and (self.parsed_speech in self.step_two_word_mapping)):
+            return ', '.join(self.step_two_word_mapping[self.parsed_speech['words']])
         else:
-            print('No stage information given! Please give the current stage with Who\'s on First commands. To use the Who\'s on First module, say "[step] one|two <word>".')
-            return
-
-        self.parsed_parameters = {
-            'step': step,
-            'words': self.parameters[offset:]
-        }
-
-    def solve(self) -> str:
-        if ((self.parsed_parameters['step'] == 1) and (self.parsed_parameters['words'] in self.step_one_word_mapping)):
-                return self.step_one_word_mapping[self.parsed_parameters['words']]
-        elif ((self.parsed_parameters['step'] == 2) and (self.parsed_parameters['words'] in self.step_two_word_mapping)):
-            return ', '.join(self.step_two_word_mapping[self.parsed_parameters['words']])
-        else:
-            print('Invalid configuration!')
+            print('Who\'s on first module: unrecognized symbols!')
             return ''

@@ -24,6 +24,7 @@ import _thread as thread
 # TODO: class design
 # TODO: remove modules when done?
 # TODO: comments (periods)
+# TODO: common speech mapping in speech_handler?
 
 class Game:
     def __init__(self) -> None:
