@@ -36,7 +36,7 @@ import modules.bomb
 class Wires:
     def solve_next_step(self, recognized_speech: str) -> str:
         if not self.try_parse_speech(recognized_speech):
-            return ''
+            print('Could not parse speech!')
         if not modules.bomb.is_serial_set:
             print('To solve a wires module, I need to know if the last digit of the serial number is even or odd.')
             print('You can enter bomb setup mode by saying: "initialize".')

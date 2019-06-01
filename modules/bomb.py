@@ -1,3 +1,5 @@
+import utilities
+
 is_serial_set = False
 is_num_batteries_set = False
 is_indicators_set = False
@@ -5,45 +7,19 @@ is_ports_set = False
 
 is_last_digit_of_serial_odd = False
 does_serial_contain_vowel = False
-num_batteries = 0
+num_batteries = -1
 indicators = []
 ports = []
 strikes = 0
 
 class Bomb:
-    word_to_int_mapping = {
-        '0': 0,
-        '1': 1,
-        '2': 2,
-        '3': 3,
-        '4': 4,
-        '5': 5,
-        '6': 6,
-        '7': 7,
-        '8': 8,
-        '9': 9,
-        'zero': 0,
-        'one': 1,
-        'to': 2,
-        'too': 2,
-        'two': 2,
-        'three': 3,
-        'for': 4,
-        'four': 4,
-        'five': 5,
-        'six': 6,
-        'seven': 7,
-        'ate': 8,
-        'eight': 8,
-        'nine': 9
-    }
-
     wire_modules = []
     button_modules = []
     keypad_modules = []
     simon_says_modules = []
     whos_on_first_modules = []
     complicated_wires_modules = []
+    memory_modules = []
 
     def set_serial(self, audio_data: str) -> None:
         global is_last_digit_of_serial_odd
@@ -66,9 +42,11 @@ class Bomb:
 
         # Get last word of command, which should be the number of batteries.
         batteries = audio_data.split()[-1]
-        if batteries in self.word_to_int_mapping:
-            num_batteries = self.word_to_int_mapping[batteries]
+        num_batteries = utilities.string_to_number(batteries)
+        if num_batteries != -1:
             is_num_batteries_set = True
+        else:
+            print('Could not parse batteries! Please re-enter the number of batteries by saying "batteries <number>".')
 
     def set_indicators(self, audio_data: str) -> None:
         global indicators
