@@ -58,7 +58,7 @@ class Game:
 
         if recognized_speech == 'exit':
             return False
-        elif ((recognized_speech == 'done') or (recognized_speech == 'finish')):
+        elif recognized_speech == 'finish':
             self.bomb_mode = BombMode.Free
         elif recognized_speech == 'add strike':
             self.bomb.increment_strikes()
