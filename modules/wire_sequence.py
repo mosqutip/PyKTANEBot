@@ -45,12 +45,11 @@ On the Subject of Wire Sequences
 import modules.bomb
 
 class WireSequence:
-    def __init__(self, parameters: str) -> None:
-        self.parameters = parameters
-        self.parse_parameters()
-
-    def parse_parameters(self) -> None:
+    def __init__(self):
         return
 
-    def solve(self) -> str:
+    def try_parse_speech(self, recognized_speech: str) -> bool:
+        return False
+
+    def solve_next_step(self, recognized_speech: str) -> str:
         return ''
