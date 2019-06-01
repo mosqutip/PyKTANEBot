@@ -37,6 +37,10 @@ class SpeechHandler:
                 print('RECOGNITION: Print command.')
 
                 self.speech_queue.put('print bomb')
+            if (recognized_speech.startswith('strike')):
+                print('RECOGNITION: Strike command.')
+
+                self.speech_queue.put('add strike')
             elif (recognized_speech.startswith('initialize') or recognized_speech.startswith('setup')):
                 print(f'RECOGNITION: Initialization.')
 

@@ -195,16 +195,24 @@ class WhosOnFirst:
 
     def __init__(self):
         self.stage = 1
+        self.step = 1
 
     def try_parse_speech(self, recognized_speech: str) -> bool:
         self.parsed_speech = recognized_speech
         return True
 
     def solve_next_step(self, recognized_speech: str) -> str:
-        if ((self.stage == 1) and (self.parsed_speech in self.step_one_word_mapping)):
-                return self.step_one_word_mapping[self.parsed_speech['words']]
-        elif ((self.stage == 2) and (self.parsed_speech in self.step_two_word_mapping)):
-            return ', '.join(self.step_two_word_mapping[self.parsed_speech['words']])
+        if not self.try_parse_speech(recognized_speech):
+            print('Who\'s on First module: could not parse speech!')
+            return ''
+
+        if ((self.step == 1) and (self.parsed_speech in self.step_one_word_mapping)):
+            self.step = 2
+            return self.step_one_word_mapping[self.parsed_speech]
+        elif ((self.step == 2) and (self.parsed_speech in self.step_two_word_mapping)):
+            self.step = 1
+            self.stage += 1
+            return ', '.join(self.step_two_word_mapping[self.parsed_speech])
         else:
-            print('Who\'s on first module: unrecognized symbols!')
+            print('Who\'s on First module: invalid phrase!')
             return ''

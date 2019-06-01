@@ -47,51 +47,50 @@ class ComplicatedWires:
             print('To solve a complicated wires module, I need to know how many batteries on are the bomb.')
             print('You can enter bomb setup mode by saying: "initialize".')
             print('You can then set the number of batteries by saying: "set batteries".')
-            return ''
         if not modules.bomb.is_serial_set:
             print('To solve a complicated wires module, I need to know if the last digit of the serial number is even.')
             print('You can enter bomb setup mode by saying: "initialize".')
             print('You can then set the serial number by saying: "set serial".')
-            return ''
         if not modules.bomb.is_ports_set:
             print('To solve a complicated wires module, I need to know which ports are on the bomb.')
             print('You can enter bomb setup mode by saying: "initialize".')
             print('You can then set the ports by saying: "set ports".')
+        if ((not modules.bomb.is_num_batteries_set) or (not modules.bomb.is_serial_set) or (not modules.bomb.is_ports_set)):
             return ''
 
-        result = []
+        solution = []
         for wire in self.parsed_speech:
             if wire['led']:
                 if wire['blue']:
                     if wire['red']:
                         if wire['star'] or modules.bomb.is_last_digit_of_serial_odd:
-                            result.append('do not cut')
+                            solution.append('do not cut')
                         else:
-                            result.append('cut')
+                            solution.append('cut')
                     elif 'parallel' in modules.bomb.ports:
-                        result.append('cut')
+                        solution.append('cut')
                     else:
-                        result.append('do not cut')
+                        solution.append('do not cut')
                 elif ((modules.bomb.num_batteries >= 2) and (wire['red'] or wire['star'])):
-                    result.append('cut')
+                    solution.append('cut')
                 else:
-                    result.append('do not cut')
+                    solution.append('do not cut')
             elif wire['star']:
                 if wire['red']:
                     if wire['blue'] and 'parallel' not in modules.bomb.ports:
-                        result.append('do not cut')
+                        solution.append('do not cut')
                     else:
-                        result.append('cut')
+                        solution.append('cut')
                 elif wire['blue']:
-                    result.append('do not cut')
+                    solution.append('do not cut')
                 else:
-                    result.append('cut')
+                    solution.append('cut')
             elif wire['red'] or wire['blue']:
                 if not modules.bomb.is_last_digit_of_serial_odd:
-                    result.append('cut')
+                    solution.append('cut')
                 else:
-                    result.append('do not cut')
+                    solution.append('do not cut')
             else:
-                result.append('cut')
+                solution.append('cut')
 
-        return '\n'.join(result)
+        return '\n'.join(solution)

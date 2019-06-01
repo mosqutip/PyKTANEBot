@@ -7,12 +7,12 @@ On the Subject of Keypads
 
 class Keypad:
     symbol_table = [
-        [ 'oscar', 'tent', 'lambda', 'lightning', 'kitty', 'hotel', 'backward' ],
+        [ 'oscar', 'tent', 'lambda', 'lightning', 'cat', 'hotel', 'backward' ],
         [ 'euro', 'oscar', 'backward', 'curly', 'light', 'hotel', 'question' ],
-        [ 'copyright', 'butt', 'curly', 'squid', 'romeo', 'lambda', 'light' ],
-        [ 'six', 'paragraph', 'bravo', 'kitty', 'squid', 'question', 'smiley' ],
+        [ 'copyright', 'whiskey', 'curly', 'squid', 'romeo', 'lambda', 'light' ],
+        [ 'six', 'paragraph', 'bravo', 'cat', 'squid', 'question', 'smiley' ],
         [ 'trident', 'smiley', 'bravo', 'charlie', 'paragraph', 'three', 'dark' ],
-        [ 'six', 'euro', 'railroad', 'greek', 'trident', 'russia', 'omega' ],
+        [ 'six', 'euro', 'railroad', 'greek', 'trident', 'russia', 'omega' ], #edit
     ]
 
     def try_parse_speech(self, recognized_speech: str) -> bool:
@@ -27,6 +27,10 @@ class Keypad:
         return True
 
     def solve_next_step(self, recognized_speech: str) -> str:
+        if not self.try_parse_speech(recognized_speech):
+            print('Keypad module: could not parse speech!')
+            return ''
+
         for i in range(len(self.symbol_table)):
             output_symbols = [ '' ] * 4
             count = 0

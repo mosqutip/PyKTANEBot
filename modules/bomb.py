@@ -28,7 +28,7 @@ class Bomb:
 
         if 'even' in audio_data:
             is_last_digit_of_serial_odd = False
-        elif 'odd' in audio_data:
+        elif (('odd' in audio_data) or ('aud' in audio_data)):
             is_last_digit_of_serial_odd = True
 
         if 'vowel' in audio_data:

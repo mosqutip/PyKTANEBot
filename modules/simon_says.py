@@ -52,6 +52,9 @@ class SimonSays:
         return True
 
     def solve_next_step(self, recognized_speech: str) -> str:
+        if not self.try_parse_speech(recognized_speech):
+            print('Simon Says module: could not parse speech!')
+            return ''
         if not modules.bomb.is_serial_set:
             print('To solve a Simon Says module, I need to know if the serial number contains a vowel.')
             print('You can enter bomb setup mode by saying: "initialize".')

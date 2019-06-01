@@ -50,11 +50,11 @@ class Button:
             print('To solve a button module, I need to know how many batteries on are the bomb.')
             print('You can enter bomb setup mode by saying: "initialize".')
             print('You can then set the number of batteries by saying: "set batteries".')
-            return ''
         if not modules.bomb.is_indicators_set:
             print('To solve a button module, I need to know which indicators are lit on are the bomb.')
             print('You can enter bomb setup mode by saying: "initialize".')
             print('You can then set the indicators by saying: "set indicators".')
+        if ((not modules.bomb.is_num_batteries_set) or (not modules.bomb.is_indicators_set)):
             return ''
 
         if self.stage == 1:
