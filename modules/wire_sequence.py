@@ -44,12 +44,60 @@ On the Subject of Wire Sequences
 
 import modules.bomb
 
+A = 0x4
+B = 0x2
+C = 0x1
+
+red_cuts = [
+    C, B, A, (A | C), B, (A | C), (A | B | C), (A | B), B
+]
+
+blue_cuts = [
+    B, (A | C), B, A, B, (B | C), C, (A | C), A
+]
+
+black_cuts = [
+    (A | B | C), (A | C), B, (A | C), B, (B | C), (A | B), C, C
+]
+
 class WireSequence:
     def __init__(self):
-        return
+        self.red_count = 0
+        self.blue_count = 0
+        self.black_count = 0
 
     def try_parse_speech(self, recognized_speech: str) -> bool:
+        words = recognized_speech.split()
+        if len(words) % 2 != 0:
+            print('Wire sequence module: odd number of parameters!')
+            return False
+
+        self.parsed_speech = []
+        for i in range(0, len(words), 2):
+            if words[i + 1] == 'alpha':
+                self.parsed_speech.append(tuple(words[i], A))
+            elif words[i + 1] == 'bravo':
+                self.parsed_speech.append(tuple(words[i], B))
+            elif words[i + 1] == 'charlie':
+                self.parsed_speech.append(tuple(words[i], C))
+
         return False
 
     def solve_next_step(self, recognized_speech: str) -> str:
-        return ''
+        if not self.try_parse_speech(recognized_speech):
+            print('Wire sequence module: could not parse speech!')
+            return ''
+
+        solution = []
+        for wire in self.parsed_speech:
+            if wire[0] == 'red':
+                solution.append('cut') if (wire[1] & red_cuts) else solution.append('do not cut')
+            elif wire[0] == 'blue':
+                solution.append('cut') if (wire[1] & blue_cuts) else solution.append('do not cut')
+            elif wire[0] == 'black':
+                solution.append('cut') if (wire[1] & black_cuts) else solution.append('do not cut')
+            else:
+                print('Wire sequence module: invalid wire color!')
+                return ''
+
+        return '\n'.join(solution)

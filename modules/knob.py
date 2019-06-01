@@ -40,12 +40,40 @@ X = Lit LED
 
 import modules.bomb
 
-class Knob:
-    def __init__(self):
-        return
+configurations = {
+    'OOXOXXXXXXOX': 'up',
+    'XOXOXOOXXOXX': 'up',
+    'OXXOOXXXXXOX': 'down',
+    'XOXOXOOXOOOX': 'down',
+    'OOOOXOXOOXXX': 'left',
+    'OOOOXOOOOXXO': 'left',
+    'XOXXXXXXXOXO': 'right',
+    'XOXXOOXXXOXO': 'right',
+}
 
+class Knob:
     def try_parse_speech(self, recognized_speech: str) -> bool:
-        return False
+        words = recognized_speech.split()
+        lights = []
+        for word in words:
+            if word == 'on':
+                lights.append('X')
+            elif word == 'off':
+                lights.append('O')
+            else:
+                print('Knob module: invalid state!')
+                return False
+
+        self.parsed_speech = ''.join(lights)
+        return True
 
     def solve_next_step(self, recognized_speech: str) -> str:
-        return ''
+        if not self.try_parse_speech(recognized_speech):
+            print('Knob module: could not parse speech!')
+            return ''
+
+        if self.parsed_speech in configurations:
+            return configurations[self.parsed_speech]
+        else:
+            print('Knob module: invalid light configuration!')
+            return ''

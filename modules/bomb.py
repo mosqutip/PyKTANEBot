@@ -21,6 +21,9 @@ class Bomb:
     memory_modules = []
     morse_code_modules = []
     complicated_wires_modules = []
+    wire_sequence_modules = []
+    password_modules = []
+    knob_modules = []
 
     def set_serial(self, audio_data: str) -> None:
         global is_last_digit_of_serial_odd

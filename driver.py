@@ -7,8 +7,10 @@ from modules.keypad import Keypad
 from modules.knob import Knob
 from modules.memory import Memory
 from modules.morse_code import MorseCode
+from modules.password import Password
 from modules.simon_says import SimonSays
 from modules.whos_on_first import WhosOnFirst
+from modules.wire_sequence import WireSequence
 from modules.wires import Wires
 
 import utilities
@@ -26,6 +28,7 @@ import _thread as thread
 # TODO: remove modules when done?
 # TODO: comments (periods)
 # TODO: common speech mapping in speech_handler?
+# TODO: Logger
 
 class Game:
     def __init__(self) -> None:
@@ -91,6 +94,15 @@ class Game:
         elif recognized_speech == 'module complicated wires':
             self.bomb_mode = BombMode.StartModule
             self.current_module_type = Module.ComplicatedWires
+        elif recognized_speech == 'module wire sequence':
+            self.bomb_mode = BombMode.StartModule
+            self.current_module_type = Module.WireSequence
+        elif recognized_speech == 'module password':
+            self.bomb_mode = BombMode.StartModule
+            self.current_module_type = Module.Password
+        elif recognized_speech == 'module knob':
+            self.bomb_mode = BombMode.StartModule
+            self.current_module_type = Module.Knob
 
         if self.bomb_mode != BombMode.Free:
             return self.handle_mode(recognized_speech)
@@ -148,11 +160,23 @@ class Game:
         elif self.current_module_type == Module.ComplicatedWires:
             stored_modules = self.bomb.complicated_wires_modules
             new_module = ComplicatedWires
+        elif self.current_module_type == Module.WireSequence:
+            stored_modules = self.bomb.wire_sequence_modules
+            new_module = WireSequence
+        elif self.current_module_type == Module.Password:
+            stored_modules = self.bomb.password_modules
+            new_module = Password
+        elif self.current_module_type == Module.Knob:
+            stored_modules = self.bomb.knob_modules
+            new_module = Knob
 
         if recognized_speech.startswith('index'):
             module_index = self._get_module_index(recognized_speech)
-            self.current_module = stored_modules[module_index]
-        else:
+        elif recognized_speech.startswith('resume'):
+            module_index = -1
+
+        # Guard against invalid index accesses.
+        if ((len(stored_modules) == 0) or (module_index >= len(stored_modules)) or (('index' not in recognized_speech) and ('resume') not in recognized_speech)):
             self.current_module = new_module()
             stored_modules.append(self.current_module)
 
@@ -186,6 +210,10 @@ class Module(Enum):
     Memory = 5
     MorseCode = 6
     ComplicatedWires = 7
+    WireSequence = 8
+    Maze = 9
+    Password = 10
+    Knob = 11
 
 def main():
     game = Game()
