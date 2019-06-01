@@ -45,13 +45,13 @@ class Password:
             return False
 
         letters = recognized_speech.split()
-        if len(letters) != 9:
+        if len(letters) != 8:
             print('Password module: invalid number of arguments!')
             return False
 
         self.dial_number = utilities.string_to_number(letters[1])
         for letter in letters[2:]:
-            self.dials[self.dial_number].append(utilities.parse_nato_to_letters(letter))
+            self.dials[self.dial_number].append(utilities.parse_nato_to_letter(letter))
 
         return True
 

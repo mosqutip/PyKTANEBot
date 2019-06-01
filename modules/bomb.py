@@ -22,6 +22,7 @@ class Bomb:
     morse_code_modules = []
     complicated_wires_modules = []
     wire_sequence_modules = []
+    maze_modules = []
     password_modules = []
     knob_modules = []
 

@@ -49,15 +49,15 @@ B = 0x2
 C = 0x1
 
 red_cuts = [
-    C, B, A, (A | C), B, (A | C), (A | B | C), (A | B), B
+    0x0, C, B, A, (A | C), B, (A | C), (A | B | C), (A | B), B
 ]
 
 blue_cuts = [
-    B, (A | C), B, A, B, (B | C), C, (A | C), A
+    0x0, B, (A | C), B, A, B, (B | C), C, (A | C), A
 ]
 
 black_cuts = [
-    (A | B | C), (A | C), B, (A | C), B, (B | C), (A | B), C, C
+    0x0, (A | B | C), (A | C), B, (A | C), B, (B | C), (A | B), C, C
 ]
 
 class WireSequence:
@@ -67,6 +67,8 @@ class WireSequence:
         self.black_count = 0
 
     def try_parse_speech(self, recognized_speech: str) -> bool:
+        recognized_speech = recognized_speech.replace('read', 'red')
+        recognized_speech = recognized_speech.replace('bleu', 'blue')
         words = recognized_speech.split()
         if len(words) % 2 != 0:
             print('Wire sequence module: odd number of parameters!')
@@ -75,13 +77,13 @@ class WireSequence:
         self.parsed_speech = []
         for i in range(0, len(words), 2):
             if words[i + 1] == 'alpha':
-                self.parsed_speech.append(tuple(words[i], A))
+                self.parsed_speech.append((words[i], A))
             elif words[i + 1] == 'bravo':
-                self.parsed_speech.append(tuple(words[i], B))
+                self.parsed_speech.append((words[i], B))
             elif words[i + 1] == 'charlie':
-                self.parsed_speech.append(tuple(words[i], C))
+                self.parsed_speech.append((words[i], C))
 
-        return False
+        return True
 
     def solve_next_step(self, recognized_speech: str) -> str:
         if not self.try_parse_speech(recognized_speech):
@@ -91,11 +93,14 @@ class WireSequence:
         solution = []
         for wire in self.parsed_speech:
             if wire[0] == 'red':
-                solution.append('cut') if (wire[1] & red_cuts) else solution.append('do not cut')
+                self.red_count += 1
+                solution.append('cut') if (wire[1] & red_cuts[self.red_count]) else solution.append('do not cut')
             elif wire[0] == 'blue':
-                solution.append('cut') if (wire[1] & blue_cuts) else solution.append('do not cut')
+                self.blue_count += 1
+                solution.append('cut') if (wire[1] & blue_cuts[self.blue_count]) else solution.append('do not cut')
             elif wire[0] == 'black':
-                solution.append('cut') if (wire[1] & black_cuts) else solution.append('do not cut')
+                self.black_count += 1
+                solution.append('cut') if (wire[1] & black_cuts[self.black_count]) else solution.append('do not cut')
             else:
                 print('Wire sequence module: invalid wire color!')
                 return ''

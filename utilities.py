@@ -28,11 +28,11 @@ string_to_number_mapping = {
     'nine': 9
 }
 
-def string_to_number(index: str) -> int:
-    if index in string_to_number_mapping:
-        return string_to_number_mapping[index]
+def string_to_number(recognized_speech: str) -> int:
+    if recognized_speech in string_to_number_mapping:
+        return string_to_number_mapping[recognized_speech]
     else:
-        print(f'Could not parse number: {index}')
+        print(f'Could not parse number: {recognized_speech}')
         return -1
 
 nato_to_letter_mapping = {
@@ -67,13 +67,20 @@ nato_to_letter_mapping = {
     'zulu': 'z',
 }
 
-def parse_nato_to_letters(recognized_speech: str) -> str:
-    translation = []
+# def parse_nato_to_letters(recognized_speech: str) -> str:
+#     translation = []
 
-    for word in recognized_speech:
-        if word in nato_to_letter_mapping:
-            translation.append(nato_to_letter_mapping[word])
-        else:
-            translation.append('?')
+#     for word in recognized_speech:
+#         if word in nato_to_letter_mapping:
+#             translation.append(nato_to_letter_mapping[word])
+#         else:
+#             translation.append('?')
 
-    return ''.join(translation)
+#     return ''.join(translation)
+
+def parse_nato_to_letter(recognized_speech: str) -> str:
+    if recognized_speech in nato_to_letter_mapping:
+        return nato_to_letter_mapping[recognized_speech]
+    else:
+        print(f'Could not parse NATO word: {recognized_speech}')
+        return -1

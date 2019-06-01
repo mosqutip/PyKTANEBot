@@ -5,6 +5,7 @@ from modules.button import Button
 from modules.complicated_wires import ComplicatedWires
 from modules.keypad import Keypad
 from modules.knob import Knob
+from modules.maze import Maze
 from modules.memory import Memory
 from modules.morse_code import MorseCode
 from modules.password import Password
@@ -97,6 +98,9 @@ class Game:
         elif recognized_speech == 'module wire sequence':
             self.bomb_mode = BombMode.StartModule
             self.current_module_type = Module.WireSequence
+        elif recognized_speech == 'module maze':
+            self.bomb_mode = BombMode.StartModule
+            self.current_module_type = Module.Maze
         elif recognized_speech == 'module password':
             self.bomb_mode = BombMode.StartModule
             self.current_module_type = Module.Password
@@ -163,6 +167,9 @@ class Game:
         elif self.current_module_type == Module.WireSequence:
             stored_modules = self.bomb.wire_sequence_modules
             new_module = WireSequence
+        elif self.current_module_type == Module.Maze:
+            stored_modules = self.bomb.maze_modules
+            new_module = Maze
         elif self.current_module_type == Module.Password:
             stored_modules = self.bomb.password_modules
             new_module = Password
@@ -170,6 +177,7 @@ class Game:
             stored_modules = self.bomb.knob_modules
             new_module = Knob
 
+        module_index = 0
         if recognized_speech.startswith('index'):
             module_index = self._get_module_index(recognized_speech)
         elif recognized_speech.startswith('resume'):
