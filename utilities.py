@@ -68,16 +68,29 @@ nato_to_letter_mapping = {
     'zulu': 'z',
 }
 
-def string_to_number(recognized_speech: str) -> int:
+def parse_string_to_number(recognized_speech: str) -> int:
     if recognized_speech in string_to_number_mapping:
         return string_to_number_mapping[recognized_speech]
     else:
-        print(f'Could not parse number: {recognized_speech}')
+        print(f'Could not parse number: {recognized_speech}!')
         return -1
 
 def parse_nato_to_letter(recognized_speech: str) -> str:
     if recognized_speech in nato_to_letter_mapping:
         return nato_to_letter_mapping[recognized_speech]
     else:
-        print(f'Could not parse NATO word: {recognized_speech}')
+        print(f'Could not parse NATO word: {recognized_speech}!')
         return -1
+
+def parse_nato_to_serial(recognized_speech: str) -> []:
+    serial = []
+    for character in recognized_speech:
+        if character in nato_to_letter_mapping:
+            serial.append(nato_to_letter_mapping[character])
+        elif character in string_to_number_mapping:
+            serial.append(string_to_number_mapping)
+        else:
+            print(f'Could not parse character: {character}!')
+            serial.append('?')
+
+    return serial

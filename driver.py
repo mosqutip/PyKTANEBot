@@ -14,7 +14,7 @@ from modules.simon_says import SimonSays
 from modules.whos_on_first import WhosOnFirst
 from modules.wire_sequence import WireSequence
 from modules.wires import Wires
-from utilities import string_to_number
+from utilities import parse_string_to_number
 
 import queue
 import speech_handler as sh
@@ -27,7 +27,6 @@ import _thread as thread
 # TODO: Class design
 # TODO: Add comments (check periods)
 # TODO: Enum strings?
-# TODO: serial nato mapping
 
 class Game:
     def __init__(self) -> None:
@@ -194,7 +193,7 @@ class Game:
         words = recognized_speech.split()
         for i in range(len(words)):
             if words[i] == 'index' and ((i + 1) < len(words)):
-                return string_to_number(words[i + 1])
+                return parse_string_to_number(words[i + 1])
 
         print('No index recognized! Defaulting to 1...')
         return 1

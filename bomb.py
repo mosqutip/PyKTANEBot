@@ -1,6 +1,6 @@
 from enum import Enum
 
-import utilities
+from utilities import parse_nato_to_serial, parse_string_to_number
 
 is_last_digit_of_serial_odd = False
 does_serial_contain_vowel = False
@@ -41,20 +41,27 @@ class Bomb:
         global is_last_digit_of_serial_odd
         global does_serial_contain_vowel
 
-        if 'even' in audio_data:
-            is_last_digit_of_serial_odd = False
-        elif (('odd' in audio_data) or ('aud' in audio_data)):
-            is_last_digit_of_serial_odd = True
+        serial = parse_nato_to_serial(audio_data)
+        if ((len(serial) != 6) or '?' in serial):
+            return
 
-        if 'vowel' in audio_data:
-            does_serial_contain_vowel = True
+        does_serial_contain_vowel = False
+        for character in serial[:-1]:
+            if character in ['AEIOU']:
+                does_serial_contain_vowel = True
+                break
+
+        if serial[-1] % 2 == 1:
+            is_last_digit_of_serial_odd = True
+        else:
+            is_last_digit_of_serial_odd = False
 
     def set_batteries(self, audio_data: str) -> None:
         global num_batteries
 
         # Get last word of command, which should be the number of batteries.
         batteries = audio_data.split()[-1]
-        num_batteries = utilities.string_to_number(batteries)
+        num_batteries = parse_string_to_number(batteries)
 
     def set_indicators(self, audio_data: str) -> None:
         global indicators
