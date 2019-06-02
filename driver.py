@@ -120,9 +120,10 @@ class Game:
                 self.current_module_type = ModuleType.Knob
                 self.current_stored_modules = self.bomb.knob_modules
                 self.new_module = Knob
-
-        if self.bomb.bomb_mode != BombMode.Free:
+        elif self.bomb.bomb_mode != BombMode.Free:
             return self.handle_mode(recognized_speech)
+        else:
+            print(f'Unrecognized command: {recognized_speech}!')
 
         return ''
 
@@ -134,9 +135,6 @@ class Game:
             return self.initialize_mode(recognized_speech)
         elif self.bomb.bomb_mode == BombMode.Module:
             return self.module_mode(recognized_speech)
-        else:
-            print(f'Unrecognized command: {recognized_speech}')
-            return ''
 
     def initialize_mode(self, recognized_speech: str) -> str:
         if (('serial' in recognized_speech) or ('cereal' in recognized_speech)):

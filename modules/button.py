@@ -19,7 +19,10 @@ Based on its color you must release the button at a specific point in time:
     • Any other color strip: release when the countdown timer has a 1 in any position.
 '''
 
-from bomb import num_batteries, indicators
+import sys
+sys.path.append("..")
+
+import config
 
 class Button:
     def __init__(self):
@@ -46,26 +49,26 @@ class Button:
         if not self.try_parse_speech(recognized_speech):
             print('Button module: could not parse speech!')
             return ''
-        if not num_batteries:
+        if not config.num_batteries:
             print('To solve a button module, I need to know how many batteries on are the bomb.')
             print('You can enter bomb setup mode by saying: "initialize".')
             print('You can then set the number of batteries by saying: "set batteries".')
-        if not indicators:
+        if not config.indicators:
             print('To solve a button module, I need to know which indicators are lit on are the bomb.')
             print('You can enter bomb setup mode by saying: "initialize".')
             print('You can then set the indicators by saying: "set indicators".')
-        if ((not num_batteries) or (not indicators)):
+        if ((not config.num_batteries) or (not config.indicators)):
             return ''
 
         if self.stage == 1:
             solution = ''
             if ((self.parsed_speech['color'] == 'blue') and (self.parsed_speech['text'] == 'abort')):
                 solution =  'hold'
-            elif ((num_batteries > 1) and (self.parsed_speech['text'] == 'detonate')):
+            elif ((config.num_batteries > 1) and (self.parsed_speech['text'] == 'detonate')):
                 solution =  'press and immediately release'
-            elif ((self.parsed_speech['color'] == 'white') and ('car' in indicators)):
+            elif ((self.parsed_speech['color'] == 'white') and ('car' in config.indicators)):
                 solution =  'hold'
-            elif ((num_batteries > 2) and ('freak' in indicators)):
+            elif ((config.num_batteries > 2) and ('freak' in config.indicators)):
                 solution =  'press and immediately release'
             elif self.parsed_speech['color'] == 'yellow':
                 solution =  'hold'

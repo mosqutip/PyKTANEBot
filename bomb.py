@@ -2,22 +2,7 @@ from enum import Enum
 
 from utilities import parse_nato_to_serial, parse_string_to_number
 
-is_last_digit_of_serial_odd = False
-does_serial_contain_vowel = False
-
-num_batteries = None
-indicators = None
-ports = None
-strikes = 0
-
-__all__ = [
-    'is_last_digit_of_serial_odd',
-    'does_serial_contain_vowel',
-    'num_batteries',
-    'indicators',
-    'ports',
-    'strikes'
-]
+import config
 
 class Bomb:
     wire_modules = []
@@ -38,65 +23,47 @@ class Bomb:
         self.current_module_type = None
 
     def set_serial(self, audio_data: str) -> None:
-        global is_last_digit_of_serial_odd
-        global does_serial_contain_vowel
-
         raw_serial = audio_data.split()[2:]
         serial = parse_nato_to_serial(raw_serial)
         if ((len(serial) != 6) or '?' in serial):
             return
 
-        does_serial_contain_vowel = False
+        config.does_serial_contain_vowel = False
         for character in serial[:-1]:
             if character in ['aeiou']:
-                does_serial_contain_vowel = True
+                config.does_serial_contain_vowel = True
                 break
 
         if serial[-1] % 2 == 1:
-            is_last_digit_of_serial_odd = True
+            config.is_last_digit_of_serial_odd = True
         else:
-            is_last_digit_of_serial_odd = False
+            config.is_last_digit_of_serial_odd = False
 
     def set_batteries(self, audio_data: str) -> None:
-        global num_batteries
-
         # Get last word of command, which should be the number of batteries.
         batteries = audio_data.split()[-1]
-        num_batteries = parse_string_to_number(batteries)
+        config.num_batteries = parse_string_to_number(batteries)
 
     def set_indicators(self, audio_data: str) -> None:
-        global indicators
-
-        indicators = []
+        config.indicators = []
         for word in audio_data.split()[2:]:
-            indicators.append(word)
+            config.indicators.append(word)
 
     def set_ports(self, audio_data: str) -> None:
-        global ports
-
-        ports = []
+        config.ports = []
         for word in audio_data.split()[2:]:
-            ports.append(word)
+            config.ports.append(word)
 
     def increment_strikes(self) -> None:
-        global strikes
-
-        strikes += 1
+        config.strikes += 1
 
     def reset_bomb(self) -> None:
-        global is_last_digit_of_serial_odd
-        global does_serial_contain_vowel
-        global num_batteries
-        global indicators
-        global ports
-        global strikes
-
-        is_last_digit_of_serial_odd = None
-        does_serial_contain_vowel = None
-        num_batteries = None
-        indicators = None
-        ports = None
-        strikes = 0
+        config.is_last_digit_of_serial_odd = None
+        config.does_serial_contain_vowel = None
+        config.num_batteries = None
+        config.indicators = None
+        config.ports = None
+        config.strikes = 0
 
         self.bomb_mode = BombMode.Free
         self.current_module_type = None
@@ -115,23 +82,16 @@ class Bomb:
         self.knob_modules = []
 
     def print(self) -> None:
-        global is_last_digit_of_serial_odd
-        global does_serial_contain_vowel
-        global num_batteries
-        global indicators
-        global ports
-        global strikes
-
-        indicator_string = '' if not indicators else ', '.join(indicators)
-        port_string = '' if not ports else ', '.join(ports)
+        indicator_string = '' if not config.indicators else ', '.join(config.indicators)
+        port_string = '' if not config.ports else ', '.join(config.ports)
 
         print('***** Bomb Data *****')
-        print(f'Last digit of serial is odd: {is_last_digit_of_serial_odd}')
-        print(f'Serial contains vowel: {does_serial_contain_vowel}')
-        print(f'Batteries: {num_batteries}')
+        print(f'Last digit of serial is odd: {config.is_last_digit_of_serial_odd}')
+        print(f'Serial contains vowel: {config.does_serial_contain_vowel}')
+        print(f'Batteries: {config.num_batteries}')
         print(f'Indicators: {indicator_string}')
         print(f'Ports: {port_string}')
-        print(f'Strikes: {strikes}')
+        print(f'Strikes: {config.strikes}')
         print('***** Bomb Data *****')
 
 class BombMode(Enum):

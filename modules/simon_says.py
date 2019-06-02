@@ -40,7 +40,10 @@ If the serial number does not contain a vowel:
 ---------------------------------------------------------------------
 '''
 
-from bomb import does_serial_contain_vowel, strikes
+import sys
+sys.path.append('..')
+
+import config
 
 class SimonSays:
     def __init__(self) -> None:
@@ -55,15 +58,15 @@ class SimonSays:
         if not self.try_parse_speech(recognized_speech):
             print('Simon Says module: could not parse speech!')
             return ''
-        if not does_serial_contain_vowel:
+        if not config.does_serial_contain_vowel:
             print('To solve a Simon Says module, I need to know if the serial number contains a vowel.')
             print('You can enter bomb setup mode by saying: "initialize".')
             print('You can then set the serial number by saying: "set serial".')
             return ''
 
         solution = ''
-        if does_serial_contain_vowel:
-            if strikes == 0:
+        if config.does_serial_contain_vowel:
+            if config.strikes == 0:
                 if self.parsed_speech == 'red':
                     solution = 'blue'
                 elif self.parsed_speech == 'blue':
@@ -72,7 +75,7 @@ class SimonSays:
                     solution = 'yellow'
                 elif self.parsed_speech == 'yellow':
                     solution = 'green'
-            if strikes == 1:
+            if config.strikes == 1:
                 if self.parsed_speech == 'red':
                     solution = 'yellow'
                 elif self.parsed_speech == 'blue':
@@ -81,7 +84,7 @@ class SimonSays:
                     solution = 'blue'
                 elif self.parsed_speech == 'yellow':
                     solution = 'red'
-            if strikes == 2:
+            if config.strikes == 2:
                 if self.parsed_speech == 'red':
                     solution = 'green'
                 elif self.parsed_speech == 'blue':
@@ -91,7 +94,7 @@ class SimonSays:
                 elif self.parsed_speech == 'yellow':
                     solution = 'blue'
         else:
-            if strikes == 0:
+            if config.strikes == 0:
                 if self.parsed_speech == 'red':
                     solution = 'blue'
                 elif self.parsed_speech == 'blue':
@@ -100,7 +103,7 @@ class SimonSays:
                     solution = 'green'
                 elif self.parsed_speech == 'yellow':
                     solution = 'red'
-            if strikes == 1:
+            if config.strikes == 1:
                 if self.parsed_speech == 'red':
                     solution = 'red'
                 elif self.parsed_speech == 'blue':
@@ -109,7 +112,7 @@ class SimonSays:
                     solution = 'yellow'
                 elif self.parsed_speech == 'yellow':
                     solution = 'green'
-            if strikes == 2:
+            if config.strikes == 2:
                 if self.parsed_speech == 'red':
                     solution = 'yellow'
                 elif self.parsed_speech == 'blue':
