@@ -1,6 +1,7 @@
 from enum import Enum
+from queue import Queue
 
-from modules.bomb import Bomb
+from bomb import Bomb, BombMode, ModuleType
 from modules.button import Button
 from modules.complicated_wires import ComplicatedWires
 from modules.keypad import Keypad
@@ -13,33 +14,26 @@ from modules.simon_says import SimonSays
 from modules.whos_on_first import WhosOnFirst
 from modules.wire_sequence import WireSequence
 from modules.wires import Wires
-
-import utilities
+from utilities import string_to_number
 
 import queue
 import speech_handler as sh
 import _thread as thread
 
-# TODO: more error checking/output on blank return, plus conditions?
-# TODO: class handling / inheritance model
-# TODO: static method naming
-# TODO: Reset bomb
-# TODO: Reset module
-# TODO: class design
-# TODO: remove modules when done?
-# TODO: comments (periods)
-# TODO: common speech mapping in speech_handler?
 # TODO: Logger
+    # TODO: More error checking/output on blank return, plus conditions?
+# TODO: Class handling / inheritance model
+# TODO: Reset module (or just restart?)
+# TODO: Class design
+# TODO: Add comments (check periods)
+# TODO: Enum strings?
+# TODO: serial nato mapping
 
 class Game:
     def __init__(self) -> None:
-        self.speech_queue = queue.Queue()
+        self.speech_queue = Queue()
         self.speech_handler = sh.SpeechHandler(self.speech_queue)
-
         self.bomb = Bomb()
-        self.bomb_mode = BombMode.Free
-        self.current_module_type = None
-
         self.run()
 
     def run(self) -> None:
@@ -65,6 +59,8 @@ class Game:
             return False
         elif recognized_speech == 'finish':
             self.bomb_mode = BombMode.Free
+            # Remove the last used module from storage, as it is no longer needed.
+            self.stored_modules.pop()
         elif recognized_speech == 'add strike':
             self.bomb.increment_strikes()
         elif recognized_speech == 'print bomb':
@@ -73,40 +69,40 @@ class Game:
             self.bomb_mode = BombMode.InitializeBomb
         elif recognized_speech == 'module wires':
             self.bomb_mode = BombMode.StartModule
-            self.current_module_type = Module.Wires
+            self.current_module_type = ModuleType.Wires
         elif recognized_speech == 'module button':
             self.bomb_mode = BombMode.StartModule
-            self.current_module_type = Module.Button
+            self.current_module_type = ModuleType.Button
         elif recognized_speech == 'module keypad':
             self.bomb_mode = BombMode.StartModule
-            self.current_module_type = Module.Keypad
+            self.current_module_type = ModuleType.Keypad
         elif recognized_speech == 'module simon':
             self.bomb_mode = BombMode.StartModule
-            self.current_module_type = Module.SimonSays
+            self.current_module_type = ModuleType.SimonSays
         elif recognized_speech == 'module who\'s on first':
             self.bomb_mode = BombMode.StartModule
-            self.current_module_type = Module.WhosOnFirst
+            self.current_module_type = ModuleType.WhosOnFirst
         elif recognized_speech == 'module memory':
             self.bomb_mode = BombMode.StartModule
-            self.current_module_type = Module.Memory
+            self.current_module_type = ModuleType.Memory
         elif recognized_speech == 'module morse code':
             self.bomb_mode = BombMode.StartModule
-            self.current_module_type = Module.MorseCode
+            self.current_module_type = ModuleType.MorseCode
         elif recognized_speech == 'module complicated wires':
             self.bomb_mode = BombMode.StartModule
-            self.current_module_type = Module.ComplicatedWires
+            self.current_module_type = ModuleType.ComplicatedWires
         elif recognized_speech == 'module wire sequence':
             self.bomb_mode = BombMode.StartModule
-            self.current_module_type = Module.WireSequence
+            self.current_module_type = ModuleType.WireSequence
         elif recognized_speech == 'module maze':
             self.bomb_mode = BombMode.StartModule
-            self.current_module_type = Module.Maze
+            self.current_module_type = ModuleType.Maze
         elif recognized_speech == 'module password':
             self.bomb_mode = BombMode.StartModule
-            self.current_module_type = Module.Password
+            self.current_module_type = ModuleType.Password
         elif recognized_speech == 'module knob':
             self.bomb_mode = BombMode.StartModule
-            self.current_module_type = Module.Knob
+            self.current_module_type = ModuleType.Knob
 
         if self.bomb_mode != BombMode.Free:
             return self.handle_mode(recognized_speech)
@@ -140,41 +136,41 @@ class Game:
         return ''
 
     def start_module_mode(self, recognized_speech: str) -> str:
-        if self.current_module_type == Module.Wires:
-            stored_modules = self.bomb.wire_modules
+        if self.current_module_type == ModuleType.Wires:
+            self.stored_modules = self.bomb.wire_modules
             new_module = Wires
-        elif self.current_module_type == Module.Button:
-            stored_modules = self.bomb.button_modules
+        elif self.current_module_type == ModuleType.Button:
+            self.stored_modules = self.bomb.button_modules
             new_module = Button
-        elif self.current_module_type == Module.Keypad:
-            stored_modules = self.bomb.keypad_modules
+        elif self.current_module_type == ModuleType.Keypad:
+            self.stored_modules = self.bomb.keypad_modules
             new_module = Keypad
-        elif self.current_module_type == Module.SimonSays:
-            stored_modules = self.bomb.simon_says_modules
+        elif self.current_module_type == ModuleType.SimonSays:
+            self.stored_modules = self.bomb.simon_says_modules
             new_module = SimonSays
-        elif self.current_module_type == Module.WhosOnFirst:
-            stored_modules = self.bomb.whos_on_first_modules
+        elif self.current_module_type == ModuleType.WhosOnFirst:
+            self.stored_modules = self.bomb.whos_on_first_modules
             new_module = WhosOnFirst
-        elif self.current_module_type == Module.Memory:
-            stored_modules = self.bomb.memory_modules
+        elif self.current_module_type == ModuleType.Memory:
+            self.stored_modules = self.bomb.memory_modules
             new_module = Memory
-        elif self.current_module_type == Module.MorseCode:
-            stored_modules = self.bomb.morse_code_modules
+        elif self.current_module_type == ModuleType.MorseCode:
+            self.stored_modules = self.bomb.morse_code_modules
             new_module = MorseCode
-        elif self.current_module_type == Module.ComplicatedWires:
-            stored_modules = self.bomb.complicated_wires_modules
+        elif self.current_module_type == ModuleType.ComplicatedWires:
+            self.stored_modules = self.bomb.complicated_wires_modules
             new_module = ComplicatedWires
-        elif self.current_module_type == Module.WireSequence:
-            stored_modules = self.bomb.wire_sequence_modules
+        elif self.current_module_type == ModuleType.WireSequence:
+            self.stored_modules = self.bomb.wire_sequence_modules
             new_module = WireSequence
-        elif self.current_module_type == Module.Maze:
-            stored_modules = self.bomb.maze_modules
+        elif self.current_module_type == ModuleType.Maze:
+            self.stored_modules = self.bomb.maze_modules
             new_module = Maze
-        elif self.current_module_type == Module.Password:
-            stored_modules = self.bomb.password_modules
+        elif self.current_module_type == ModuleType.Password:
+            self.stored_modules = self.bomb.password_modules
             new_module = Password
-        elif self.current_module_type == Module.Knob:
-            stored_modules = self.bomb.knob_modules
+        elif self.current_module_type == ModuleType.Knob:
+            self.stored_modules = self.bomb.knob_modules
             new_module = Knob
 
         module_index = 0
@@ -184,9 +180,9 @@ class Game:
             module_index = -1
 
         # Guard against invalid index accesses.
-        if ((len(stored_modules) == 0) or (module_index >= len(stored_modules)) or (('index' not in recognized_speech) and ('resume') not in recognized_speech)):
+        if ((len(self.stored_modules) == 0) or (module_index >= len(self.stored_modules)) or (('index' not in recognized_speech) and ('resume') not in recognized_speech)):
             self.current_module = new_module()
-            stored_modules.append(self.current_module)
+            self.stored_modules.append(self.current_module)
 
         self.bomb_mode = BombMode.SolvingModule
         return ''
@@ -198,33 +194,13 @@ class Game:
         words = recognized_speech.split()
         for i in range(len(words)):
             if words[i] == 'index' and ((i + 1) < len(words)):
-                return utilities.string_to_number(words[i + 1])
+                return string_to_number(words[i + 1])
 
         print('No index recognized! Defaulting to 1...')
         return 1
 
-class BombMode(Enum):
-    Free = 0
-    InitializeBomb = 1
-    StartModule = 2
-    SolvingModule = 3
-
-class Module(Enum):
-    Wires = 0
-    Button = 1
-    Keypad = 2
-    SimonSays = 3
-    WhosOnFirst = 4
-    Memory = 5
-    MorseCode = 6
-    ComplicatedWires = 7
-    WireSequence = 8
-    Maze = 9
-    Password = 10
-    Knob = 11
-
 def main():
-    game = Game()
+    Game()
 
 if __name__ == "__main__":
     main()

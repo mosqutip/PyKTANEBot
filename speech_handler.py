@@ -1,11 +1,12 @@
 from enum import Enum
+
 import queue
 import speech_recognition as sr
 
 class RecognitionMode(Enum):
-    Keyword = 0
-    Module = 1
-    Exit = 2
+    Keyword = 'Listen in background for specific keywords. Only recognized keywords trigger an action.'
+    Module =  'Listen in background for all audio. All audio is treated as input to the active module.'
+    Exit =    'Exit program'
 
 class SpeechHandler:
     def __init__(self, speech_queue: queue.Queue) -> None:

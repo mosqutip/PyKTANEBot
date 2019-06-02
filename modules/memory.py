@@ -32,7 +32,6 @@ Stage 5:
     If the display is 4, press the button with the same label you pressed in stage 3.
 '''
 
-import modules.bomb
 import utilities
 
 # TODO: handle missing a 'finishing' step (no position or label filled in for stage)

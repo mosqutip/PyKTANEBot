@@ -6,7 +6,7 @@ On the Subject of Complicated Wires
 • Each wire may be striped with multiple colors.
 '''
 
-import modules.bomb
+from bomb import is_last_digit_of_serial_odd, num_batteries, ports
 
 class ComplicatedWires:
     def try_parse_speech(self, recognized_speech: str) -> bool:
@@ -47,19 +47,19 @@ class ComplicatedWires:
         if not self.try_parse_speech(recognized_speech):
             print('Complicated wires module: could not parse speech!')
             return ''
-        if not modules.bomb.is_num_batteries_set:
-            print('To solve a complicated wires module, I need to know how many batteries on are the bomb.')
-            print('You can enter bomb setup mode by saying: "initialize".')
-            print('You can then set the number of batteries by saying: "set batteries".')
-        if not modules.bomb.is_serial_set:
+        if not is_last_digit_of_serial_odd:
             print('To solve a complicated wires module, I need to know if the last digit of the serial number is even.')
             print('You can enter bomb setup mode by saying: "initialize".')
             print('You can then set the serial number by saying: "set serial".')
-        if not modules.bomb.is_ports_set:
+        if not num_batteries:
+            print('To solve a complicated wires module, I need to know how many batteries on are the bomb.')
+            print('You can enter bomb setup mode by saying: "initialize".')
+            print('You can then set the number of batteries by saying: "set batteries".')
+        if not ports:
             print('To solve a complicated wires module, I need to know which ports are on the bomb.')
             print('You can enter bomb setup mode by saying: "initialize".')
             print('You can then set the ports by saying: "set ports".')
-        if ((not modules.bomb.is_num_batteries_set) or (not modules.bomb.is_serial_set) or (not modules.bomb.is_ports_set)):
+        if ((not is_last_digit_of_serial_odd) or (not num_batteries) or (not ports)):
             return ''
 
         solution = []
@@ -67,21 +67,21 @@ class ComplicatedWires:
             if wire['led']:
                 if wire['blue']:
                     if wire['red']:
-                        if wire['star'] or modules.bomb.is_last_digit_of_serial_odd:
+                        if wire['star'] or is_last_digit_of_serial_odd:
                             solution.append('do not cut')
                         else:
                             solution.append('cut')
-                    elif 'parallel' in modules.bomb.ports:
+                    elif 'parallel' in ports:
                         solution.append('cut')
                     else:
                         solution.append('do not cut')
-                elif ((modules.bomb.num_batteries >= 2) and (wire['red'] or wire['star'])):
+                elif ((num_batteries >= 2) and (wire['red'] or wire['star'])):
                     solution.append('cut')
                 else:
                     solution.append('do not cut')
             elif wire['star']:
                 if wire['red']:
-                    if wire['blue'] and 'parallel' not in modules.bomb.ports:
+                    if wire['blue'] and 'parallel' not in ports:
                         solution.append('do not cut')
                     else:
                         solution.append('cut')
@@ -90,7 +90,7 @@ class ComplicatedWires:
                 else:
                     solution.append('cut')
             elif wire['red'] or wire['blue']:
-                if not modules.bomb.is_last_digit_of_serial_odd:
+                if not is_last_digit_of_serial_odd:
                     solution.append('cut')
                 else:
                     solution.append('do not cut')

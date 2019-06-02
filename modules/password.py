@@ -16,7 +16,6 @@ On the Subject of Passwords
                  -----------------------------------------
 '''
 
-import modules.bomb
 import utilities
 
 class Password:

@@ -46,6 +46,8 @@ On the Subject of Mazes
 ========================= ========================= =========================
 '''
 
+import utilities
+
 maze0 = [
     "o o oxo o o",
     " xxx x xxxx",
@@ -194,9 +196,6 @@ coordinate_to_maze_number = {
 }
 
 maze_width = maze_height = 10
-
-import modules.bomb
-import utilities
 
 class Maze:
     def try_parse_speech(self, recognized_speech: str) -> bool:

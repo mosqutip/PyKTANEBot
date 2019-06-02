@@ -120,8 +120,6 @@ Using the label from step 1, push the first button that appears in its correspon
 ----------------------------------------------------------------------------------------------------------
 '''
 
-import modules.bomb
-
 step_one_word_mapping = {
     'yes': 'middle left',
     'first': 'upper right',

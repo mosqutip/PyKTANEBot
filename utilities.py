@@ -13,27 +13,28 @@ string_to_number_mapping = {
     'none': 0,
     'one': 1,
     'won': 1,
+    'i': 1,
     'two': 2,
     'to': 2,
     'too': 2,
+    'ii': 2,
     'three': 3,
+    'iii': 3,
     'four': 4,
     'for': 4,
+    'iv': 4,
     'five': 5,
     'v': 5,
     'six': 6,
+    'vi': 6,
     'seven': 7,
+    'vii': 7,
     'eight': 8,
+    'viii': 8,
     'ate': 8,
-    'nine': 9
+    'nine': 9,
+    'ix': 9
 }
-
-def string_to_number(recognized_speech: str) -> int:
-    if recognized_speech in string_to_number_mapping:
-        return string_to_number_mapping[recognized_speech]
-    else:
-        print(f'Could not parse number: {recognized_speech}')
-        return -1
 
 nato_to_letter_mapping = {
     'alpha': 'a',
@@ -67,16 +68,12 @@ nato_to_letter_mapping = {
     'zulu': 'z',
 }
 
-# def parse_nato_to_letters(recognized_speech: str) -> str:
-#     translation = []
-
-#     for word in recognized_speech:
-#         if word in nato_to_letter_mapping:
-#             translation.append(nato_to_letter_mapping[word])
-#         else:
-#             translation.append('?')
-
-#     return ''.join(translation)
+def string_to_number(recognized_speech: str) -> int:
+    if recognized_speech in string_to_number_mapping:
+        return string_to_number_mapping[recognized_speech]
+    else:
+        print(f'Could not parse number: {recognized_speech}')
+        return -1
 
 def parse_nato_to_letter(recognized_speech: str) -> str:
     if recognized_speech in nato_to_letter_mapping:

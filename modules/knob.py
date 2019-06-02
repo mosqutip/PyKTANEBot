@@ -38,8 +38,6 @@ Right Position:
 X = Lit LED
 '''
 
-import modules.bomb
-
 configurations = {
     'OOXOXXXXXXOX': 'up',
     'XOXOXOOXXOXX': 'up',

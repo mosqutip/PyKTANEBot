@@ -31,7 +31,7 @@ On the Subject of Wires
     Otherwise, cut the fourth wire.
 '''
 
-import modules.bomb
+from bomb import is_last_digit_of_serial_odd
 
 class Wires:
     def try_parse_speech(self, recognized_speech: str) -> bool:
@@ -71,7 +71,7 @@ class Wires:
         if not self.try_parse_speech(recognized_speech):
             print('Wires module: could not parse speech!')
             return ''
-        if not modules.bomb.is_serial_set:
+        if not is_last_digit_of_serial_odd:
             print('To solve a wires module, I need to know if the last digit of the serial number is even or odd.')
             print('You can enter bomb setup mode by saying: "initialize".')
             print('You can then set the serial number by saying: "set serial".')
@@ -87,7 +87,7 @@ class Wires:
             else:
                 return 'last'
         elif self.parsed_speech['wire_count'] == 4:
-            if ((self.parsed_speech['red_count'] > 1) and modules.bomb.is_last_digit_of_serial_odd):
+            if ((self.parsed_speech['red_count'] > 1) and is_last_digit_of_serial_odd):
                 return 'last red'
             elif ((self.parsed_speech['last_wire'] == 'yellow') and (self.parsed_speech['red_count'] == 0)):
                 return 'first'
@@ -98,7 +98,7 @@ class Wires:
             else:
                 return 'second'
         elif self.parsed_speech['wire_count'] == 5:
-            if ((self.parsed_speech['last_wire'] == 'black') and modules.bomb.is_last_digit_of_serial_odd):
+            if ((self.parsed_speech['last_wire'] == 'black') and is_last_digit_of_serial_odd):
                 return 'fourth'
             elif ((self.parsed_speech['red_count'] == 1) and (self.parsed_speech['yellow_count'] > 1)):
                 return 'first'
@@ -107,7 +107,7 @@ class Wires:
             else:
                 return 'first'
         elif self.parsed_speech['wire_count'] == 6:
-            if ((self.parsed_speech['yellow_count'] == 0) and modules.bomb.is_last_digit_of_serial_odd):
+            if ((self.parsed_speech['yellow_count'] == 0) and is_last_digit_of_serial_odd):
                 return 'third'
             elif ((self.parsed_speech['yellow_count'] == 1) and (self.parsed_speech['white_count'] > 1)):
                 return 'fourth'

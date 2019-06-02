@@ -43,8 +43,6 @@ On the Subject of Morse Code
                                                              ---------------------------
 '''
 
-import modules.bomb
-
 morse_to_letter_mapping = {
     '.-':    'a',
     '-...':  'b',
