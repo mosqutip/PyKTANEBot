@@ -50,7 +50,7 @@ class ComplicatedWires:
         if not self.try_parse_speech(recognized_speech):
             print('Complicated wires module: could not parse speech!')
             return ''
-        if not config.is_last_digit_of_serial_odd:
+        if config.is_last_digit_of_serial_odd is None:
             print('To solve a complicated wires module, I need to know if the last digit of the serial number is even.')
             print('You can enter bomb setup mode by saying: "initialize".')
             print('You can then set the serial number by saying: "set serial".')
@@ -62,7 +62,7 @@ class ComplicatedWires:
             print('To solve a complicated wires module, I need to know which ports are on the bomb.')
             print('You can enter bomb setup mode by saying: "initialize".')
             print('You can then set the ports by saying: "set ports".')
-        if ((not config.is_last_digit_of_serial_odd) or (not config.num_batteries) or (not config.ports)):
+        if ((config.is_last_digit_of_serial_odd is None) or (not config.num_batteries) or (not config.ports)):
             return ''
 
         solution = []

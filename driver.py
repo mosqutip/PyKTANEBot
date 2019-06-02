@@ -36,6 +36,7 @@ class Game:
         self.speech_queue = Queue()
         self.speech_handler = sh.SpeechHandler(self.speech_queue)
         self.bomb = Bomb()
+        self.current_module = None
         self.current_stored_modules = []
         self.run()
 
@@ -59,11 +60,13 @@ class Game:
         print(f'HANDLE Recognized speech: {recognized_speech}.')
 
         if recognized_speech == 'exit':
-            return False
+            return 'exit'
         elif recognized_speech == 'finish':
             self.bomb.bomb_mode = BombMode.Free
             # Remove the last used module from storage, as it is no longer needed.
-            self.current_stored_modules.pop()
+            self.current_module = None
+            if len(self.current_stored_modules):
+                self.current_stored_modules.pop()
         elif recognized_speech == 'add strike':
             self.bomb.increment_strikes()
         elif recognized_speech == 'print bomb':
@@ -72,6 +75,7 @@ class Game:
             self.bomb.bomb_mode = BombMode.Initialize
         elif recognized_speech.startswith('module'):
             self.bomb.bomb_mode = BombMode.Module
+            self.current_module = None
             if recognized_speech == 'module wires':
                 self.current_module_type = ModuleType.Wires
                 self.current_stored_modules = self.bomb.wire_modules
@@ -149,18 +153,22 @@ class Game:
         return ''
 
     def module_mode(self, recognized_speech: str) -> str:
-        module_index = 0
-        if recognized_speech.startswith('index'):
-            module_index = self._get_module_index(recognized_speech)
-        elif recognized_speech.startswith('resume'):
-            module_index = -1
+        if not self.current_module:
+            if recognized_speech.startswith('index'):
+                module_index = self._get_module_index(recognized_speech)
+            elif recognized_speech.startswith('resume'):
+                module_index = -1
+            else:
+                module_index = None
 
-        # Guard against invalid index accesses.
-        if ((len(self.current_stored_modules) == 0) or
-            (module_index >= len(self.current_stored_modules)) or
-            (('index' not in recognized_speech) and ('resume') not in recognized_speech)):
-            self.current_module = self.new_module()
-            self.current_stored_modules.append(self.current_module)
+            # Guard against invalid index accesses.
+            if ((not module_index) or
+                (len(self.current_stored_modules) == 0) or
+                (module_index >= len(self.current_stored_modules))):
+                self.current_module = self.new_module()
+                self.current_stored_modules.append(self.current_module)
+            else:
+                self.current_module = self.current_stored_modules[module_index]
 
         return self.current_module.solve_next_step(recognized_speech)
 

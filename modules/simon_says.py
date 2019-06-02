@@ -58,7 +58,7 @@ class SimonSays:
         if not self.try_parse_speech(recognized_speech):
             print('Simon Says module: could not parse speech!')
             return ''
-        if not config.does_serial_contain_vowel:
+        if config.does_serial_contain_vowel is None:
             print('To solve a Simon Says module, I need to know if the serial number contains a vowel.')
             print('You can enter bomb setup mode by saying: "initialize".')
             print('You can then set the serial number by saying: "set serial".')

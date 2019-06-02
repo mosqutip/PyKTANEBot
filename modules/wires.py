@@ -74,7 +74,7 @@ class Wires:
         if not self.try_parse_speech(recognized_speech):
             print('Wires module: could not parse speech!')
             return ''
-        if not config.is_last_digit_of_serial_odd:
+        if config.is_last_digit_of_serial_odd is None:
             print('To solve a wires module, I need to know if the last digit of the serial number is even or odd.')
             print('You can enter bomb setup mode by saying: "initialize".')
             print('You can then set the serial number by saying: "set serial".')
