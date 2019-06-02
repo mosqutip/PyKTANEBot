@@ -41,13 +41,14 @@ class Bomb:
         global is_last_digit_of_serial_odd
         global does_serial_contain_vowel
 
-        serial = parse_nato_to_serial(audio_data)
+        raw_serial = audio_data.split()[2:]
+        serial = parse_nato_to_serial(raw_serial)
         if ((len(serial) != 6) or '?' in serial):
             return
 
         does_serial_contain_vowel = False
         for character in serial[:-1]:
-            if character in ['AEIOU']:
+            if character in ['aeiou']:
                 does_serial_contain_vowel = True
                 break
 
@@ -121,8 +122,8 @@ class Bomb:
         global ports
         global strikes
 
-        indicator_string = ', '.join(indicators)
-        port_string = ', '.join(ports)
+        indicator_string = '' if not indicators else ', '.join(indicators)
+        port_string = '' if not ports else ', '.join(ports)
 
         print('***** Bomb Data *****')
         print(f'Last digit of serial is odd: {is_last_digit_of_serial_odd}')

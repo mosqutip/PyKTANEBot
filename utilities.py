@@ -88,7 +88,7 @@ def parse_nato_to_serial(recognized_speech: str) -> []:
         if character in nato_to_letter_mapping:
             serial.append(nato_to_letter_mapping[character])
         elif character in string_to_number_mapping:
-            serial.append(string_to_number_mapping)
+            serial.append(string_to_number_mapping[character])
         else:
             print(f'Could not parse character: {character}!')
             serial.append('?')

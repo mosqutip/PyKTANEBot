@@ -26,7 +26,10 @@ import _thread as thread
 # TODO: Reset module (or just restart?)
 # TODO: Class design
 # TODO: Add comments (check periods)
-# TODO: Enum strings?
+
+# TODO: investigate phrase timeout
+# TODO: investigate keyword tuning
+# TODO: sensitivity/timeout tuning
 
 class Game:
     def __init__(self) -> None:

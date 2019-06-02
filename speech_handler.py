@@ -19,9 +19,6 @@ class SpeechHandler:
             self.recognizer.adjust_for_ambient_noise(self.microphone)
             self.recognizer.energy_threshold = 2000
 
-        # TODO: investigate phrase timeout
-        # TODO: investigate keyword tuning
-        # TODO: sensitivity/timeout tuning
         self.stop_listening = self.recognizer.listen_in_background(self.microphone, self.recognize_keyword)
 
     def recognize_keyword(self, recognizer: sr.Recognizer, audio_data: sr.AudioData) -> None:
