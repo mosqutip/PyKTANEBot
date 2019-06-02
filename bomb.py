@@ -134,10 +134,9 @@ class Bomb:
         print('***** Bomb Data *****')
 
 class BombMode(Enum):
-    Free =           'No active processing. Parallel to RecognitionMode.Keyword.'
-    InitializeBomb = 'Bomb initialization mode for setting the serial, batteries, etc.'
-    StartModule =    'Module initialization mode for setting up new or resuming modules.'
-    SolvingModule =  'Module solving mode for solving the active module.'
+    Free =       'No active processing. Parallel to RecognitionMode.Keyword.'
+    Initialize = 'Bomb initialization mode for setting the serial, batteries, etc.'
+    Module =     'Module mode for initializing and solving the active module.'
 
 class ModuleType(Enum):
     Wires =            'Wires module.'
